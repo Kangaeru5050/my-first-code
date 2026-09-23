@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>HAKOPITA | 棚に合う箱のサイズを計算</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:#26332f;background:#f7f5ef;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #efab64;outline-offset:2px}
+    .wrap{max-width:1160px;margin:auto;padding:0 24px}.top{padding:20px 0;border-bottom:1px solid #e1e4da}.brand{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:900;letter-spacing:.035em}.mark{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#214f42;color:#fff;font-size:23px}.brand small{display:block;font-size:10px;font-weight:600;letter-spacing:.18em;color:#75847c}
+    .hero{padding:55px 0 30px}.eyebrow{color:#497869;font-size:12px;font-weight:800;letter-spacing:.15em}.hero h1{font-size:clamp(28px,4vw,44px);line-height:1.35;letter-spacing:-.04em;margin:13px 0 12px}.hero p{color:#65746d;line-height:1.8;margin:0}
+    .layout{display:grid;grid-template-columns:minmax(300px,430px) minmax(0,1fr);gap:24px;align-items:start;padding-bottom:70px}.panel{background:white;border:1px solid #e5e8df;border-radius:22px;box-shadow:0 12px 40px rgba(32,60,47,.045)}.controls{padding:26px}.result{padding:28px}
+    .section{padding-bottom:25px;margin-bottom:25px;border-bottom:1px solid #eef0eb}.section:last-child{border:0;padding-bottom:0;margin-bottom:0}.section-head{display:flex;align-items:center;gap:9px;margin-bottom:16px}.badge{background:#e9f2eb;color:#2c6a54;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800}.section h2,.result h2{font-size:17px;margin:0}.hint{font-size:12px;color:#7b8980;line-height:1.6;margin:-8px 0 16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.field label{font-size:12px;font-weight:700;color:#53665a;display:block;margin-bottom:7px}.input{position:relative}.input input,.input select{width:100%;height:47px;border:1px solid #dfe5dd;border-radius:11px;padding:0 33px 0 12px;color:#233b30;background:#fbfcf9;min-width:0}.input input:disabled{background:#f2f4ef;color:#9aa39d}.unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:#9aa49c;pointer-events:none}.select select{appearance:none;padding-right:25px}.select:after{content:'⌄';position:absolute;right:12px;top:9px;color:#75847c;pointer-events:none}.full{margin-top:13px}.switch{display:flex;align-items:center;gap:8px;font-size:13px;color:#51665b;margin-bottom:11px}.switch input{accent-color:#276a54;width:17px;height:17px}
+    .result-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.pill{font-size:11px;font-weight:800;background:#e6f3e8;color:#317055;padding:6px 11px;border-radius:30px}.pill.bad{background:#fff0e7;color:#a7512d}.sub{color:#7a897f;font-size:12px;margin:8px 0 22px}.sizecard{background:#205441;color:white;border-radius:18px;padding:23px 24px}.sizecard .label{font-size:13px;color:#d0ead8}.dimensions{font-size:clamp(24px,3.6vw,37px);letter-spacing:-.05em;font-weight:850;margin:10px 0 2px;white-space:nowrap}.dimensions small{font-size:15px;font-weight:600;letter-spacing:0}.sizecard .caption{font-size:11px;color:#bbd6c6}.inner{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:18px 2px;border-bottom:1px solid #edf0eb}.inner span{font-size:13px;color:#67786e}.inner strong{font-size:17px;letter-spacing:-.03em}.preview-title{font-size:13px;font-weight:750;margin:23px 0 12px}.preview{border:1px solid #e5ebe2;border-radius:16px;padding:16px;background:#fcfdfa}.preview svg{display:block;width:100%;height:auto;max-height:250px}.legend{display:flex;justify-content:space-between;color:#819187;font-size:11px;margin-top:9px}.note{font-size:12px;color:#65766a;background:#f3f7f2;border-radius:11px;padding:11px 13px;margin-top:15px;line-height:1.65}.note.bad{background:#fff1e9;color:#9a4d30}.buttons{display:flex;gap:9px;margin-top:20px}.buttons button{flex:1;min-width:0;border:0;border-radius:11px;background:#eaf2eb;color:#225743;font-weight:750;padding:12px 8px;font-size:12px}.buttons button.primary{background:#205441;color:white}.buttons button:disabled{opacity:.4;cursor:not-allowed}.fine{margin:17px 0 0;font-size:11px;color:#8a978e;line-height:1.7}.footer{border-top:1px solid #e1e5dd;padding:26px 0 40px;font-size:12px;color:#859087}.error{padding:17px;border-radius:12px;background:#fff1e9;color:#984629;line-height:1.6;font-size:13px}
+    @media(max-width:800px){.hero{padding:36px 0 25px}.layout{grid-template-columns:1fr}.controls,.result{padding:22px}.wrap{padding:0 16px}.dimensions{font-size:clamp(23px,6vw,36px)}}@media(max-width:370px){.grid{gap:5px}.input input{padding-left:8px}.dimensions{font-size:22px}}
+  </style>
+</head>
+<body>
+  <header class="top"><div class="wrap brand"><div class="mark" aria-hidden="true">▣</div><div>HAKOPITA<small>棚に合わせる、箱づくり。</small></div></div></header>
+  <main class="wrap">
+    <div class="hero"><div class="eyebrow">3D PRINT STORAGE CALCULATOR</div><h1>棚にぴったりの箱、<br>数字を入れるだけ。</h1><p>棚の内寸と分割数から、印刷する箱の外寸・内寸を計算します。単位はすべて mm です。</p></div>
+    <div class="layout">
+      <form class="panel controls" id="form" autocomplete="off">
+        <section class="section"><div class="section-head"><span class="badge">1</span><h2>棚の内寸</h2></div><p class="hint">箱を入れる場所の内側を測ってください。</p><div class="grid">
+          <div class="field"><label for="shelfW">幅</label><div class="input"><input id="shelfW" type="number" min="1" step="0.1" value="600" required><span class="unit">mm</span></div></div>
+          <div class="field"><label for="shelfD">奥行</label><div class="input"><input id="shelfD" type="number" min="1" step="0.1" value="400" required><span class="unit">mm</span></div></div>
+          <div class="field"><label for="shelfH">高さ</label><div class="input"><input id="shelfH" type="number" min="1" step="0.1" value="200" required><span class="unit">mm</span></div></div>
+        </div></section>
+        <section class="section"><div class="section-head"><span class="badge">2</span><h2>箱の並べ方</h2></div><p class="hint">横 × 奥行の数を指定します。箱は上が開いた形です。</p><div class="grid two">
+          <div class="field"><label for="countW">横に</label><div class="input"><input id="countW" type="number" min="1" max="30" step="1" value="3" required><span class="unit">個</span></div></div>
+          <div class="field"><label for="countD">奥行に</label><div class="input"><input id="countD" type="number" min="1" max="30" step="1" value="2" required><span class="unit">個</span></div></div>
+        </div></section>
+        <section class="section"><div class="section-head"><span class="badge">3</span><h2>すき間と厚み</h2></div><div class="grid two">
+          <div class="field"><label for="edge">棚の端の余白（片側）</label><div class="input"><input id="edge" type="number" min="0" step="0.1" value="2" required><span class="unit">mm</span></div></div>
+          <div class="field"><label for="gap">箱どうしのすき間</label><div class="input"><input id="gap" type="number" min="0" step="0.1" value="1" required><span class="unit">mm</span></div></div>
+          <div class="field"><label for="wall">壁の厚み</label><div class="input select"><select id="wall"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
+          <div class="field"><label for="base">底の厚み</label><div class="input select"><select id="base"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
+        </div><div class="full"><label class="switch"><input type="checkbox" id="customHeight">箱の高さを自分で指定する</label><div class="field"><div class="input"><input id="boxHeight" type="number" min="1" step="0.1" value="190" disabled><span class="unit">mm</span></div></div></div><p class="hint" style="margin:12px 0 0">自動では棚の高さから 10 mm を引き、取り出すための余裕を作ります。</p></section>
+        <section class="section"><div class="section-head"><span class="badge">4</span><h2>プリンターの造形範囲 <span style="font-size:11px;color:#8c9990;font-weight:500">任意</span></h2></div><p class="hint">底を下に置いて印刷する場合の判定です。横向きの90°回転も確認します。</p><div class="grid">
+          <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" placeholder="例 220"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" placeholder="例 220"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" placeholder="例 250"><span class="unit">mm</span></div></div>
+        </div></section>
+      </form>
+      <div class="panel result" aria-live="polite"><div class="result-head"><h2>計算結果</h2><span class="pill" id="status">計算済み</span></div><p class="sub" id="summary">箱を6個並べる設計</p><div id="resultBody"></div></div>
+    </div>
+  </main>
+  <footer class="footer"><div class="wrap">HAKOPITA · 試作版　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
+  <script>
+    const $ = id => document.getElementById(id);
+    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','bedW','bedD','bedH'];
+    const value = id => Number($(id).value);
+    const roundDown = n => Math.floor((n + 1e-8) * 10) / 10;
+    const format = n => Number(n.toFixed(1)).toLocaleString('ja-JP', {maximumFractionDigits:1});
+    let current = null;
+    function calculate(){
+      const W=value('shelfW'), D=value('shelfD'), H=value('shelfH'), x=value('countW'), y=value('countD');
+      const edge=value('edge'), gap=value('gap'), wall=value('wall'), base=value('base');
+      const nums=[W,D,H,x,y,edge,gap,wall,base];
+      if(['shelfW','shelfD','shelfH','countW','countD','edge','gap'].some(id=>$(id).value.trim()==='') || nums.some(n=>!Number.isFinite(n)) || [W,D,H].some(n=>n<=0) || [x,y].some(n=>!Number.isInteger(n)||n<1||n>30) || edge<0 || gap<0) throw Error('棚の寸法と分割数を正しい数値で入力してください。');
+      const w=roundDown((W-2*edge-(x-1)*gap)/x);
+      const d=roundDown((D-2*edge-(y-1)*gap)/y);
+      const h=$('customHeight').checked ? value('boxHeight') : roundDown(H-10);
+      if(($('customHeight').checked && $('boxHeight').value.trim()==='') || !Number.isFinite(h) || h<=0) throw Error('箱の高さが0以下です。棚の高さか箱の高さを見直してください。');
+      if(w<=2*wall || d<=2*wall || h<=base) throw Error('箱の内側が確保できません。分割数・厚み・余白を見直してください。');
+      if(h>H) throw Error('箱の高さが棚の高さを超えています。');
+      const bed=['bedW','bedD','bedH'].map(id=>$(id).value.trim());
+      if(bed.some(Boolean) && (!bed.every(Boolean) || bed.some(n=>!Number.isFinite(Number(n))||Number(n)<=0))) throw Error('造形範囲は3辺すべてに正の数値を入力してください。');
+      const [bw,bd,bh]=bed.map(Number);
+      let fit=null;
+      if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&d<=bd)||(d<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
+      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
+    }
+    function preview(p){
+      const pad=16, vw=560, vh=240, scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D);
+      const sw=p.W*scale, sd=p.D*scale, left=(vw-sw)/2, top=(vh-sd)/2;
+      let boxes='';
+      for(let i=0;i<p.x;i++) for(let j=0;j<p.y;j++){
+        const bx=left+(p.sideW+i*(p.w+p.gap))*scale, by=top+(p.sideD+j*(p.d+p.gap))*scale;
+        boxes+=`<rect x="${bx}" y="${by}" width="${p.w*scale}" height="${p.d*scale}" rx="${Math.min(8,p.w*scale/8,p.d*scale/8)}" fill="#cce6d6" stroke="#67a687" stroke-width="1.2"/>`;
+      }
+      return `<svg viewBox="0 0 ${vw} ${vh}" role="img" aria-label="棚を上から見た、横${p.x}個、奥行${p.y}個の箱の配置図"><rect x="${left}" y="${top}" width="${sw}" height="${sd}" fill="#f0f5ef" stroke="#789586" stroke-width="2" rx="4"/>${boxes}</svg>`;
+    }
+    function render(){
+      $('boxHeight').disabled=!$('customHeight').checked;
+      try{
+        const p=current=calculate(); $('status').textContent='計算済み'; $('status').className='pill';
+        $('summary').textContent=`横 ${p.x}個 × 奥行 ${p.y}個 ＝ 合計 ${p.x*p.y}個`;
+        let fitText='造形範囲を入力すると、印刷できるか確認できます。', fitBad=false;
+        if(p.fit==='fit') fitText='✓ 指定した造形範囲に収まります（底を下にして配置）。';
+        if(p.fit==='tooLarge'){fitText='指定した造形範囲には収まりません。分割数や高さを見直してください。';fitBad=true}
+        $('resultBody').innerHTML=`<div class="sizecard"><div class="label">箱1個の外寸</div><div class="dimensions">${format(p.w)} × ${format(p.d)} × ${format(p.h)} <small>mm</small></div><div class="caption">幅 × 奥行 × 高さ</div></div>
+          <div class="inner"><span>箱1個の内寸</span><strong>${format(p.innerW)} × ${format(p.innerD)} × ${format(p.innerH)} mm</strong></div>
+          <div class="inner"><span>必要な箱の数</span><strong>${p.x*p.y} 個</strong></div>
+          <div class="inner"><span>棚の左右 / 前後の余白</span><strong>${format(p.sideW)} / ${format(p.sideD)} mm</strong></div>
+          <div class="inner"><span>棚の上の余白</span><strong>${format(p.H-p.h)} mm</strong></div>
+          <div class="preview-title">棚を上から見た配置</div><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
+          <div class="note${fitBad?' bad':''}">${fitText}</div>
+          <div class="buttons"><button type="button" class="primary" id="download">OpenSCADを保存</button><button type="button" id="copy">寸法をコピー</button></div>
+          <p class="fine">小数第1位で切り捨て、棚からはみ出さない値を表示します。内寸は壁と底を引いた空間です。OpenSCADは底が閉じた、ふたのない箱を生成します。STLへの変換にはOpenSCADが必要です。造形範囲の判定はサポート材やブリムの寸法を含みません。</p>`;
+        $('download').addEventListener('click',()=>downloadScad(p));
+        $('copy').addEventListener('click',async()=>{const t=`箱 ${p.x*p.y}個｜外寸 ${format(p.w)} × ${format(p.d)} × ${format(p.h)} mm｜内寸 ${format(p.innerW)} × ${format(p.innerD)} × ${format(p.innerH)} mm`;try{await navigator.clipboard.writeText(t);$('copy').textContent='コピーしました';setTimeout(()=>$('copy')&&($('copy').textContent='寸法をコピー'),1800)}catch{window.prompt('このテキストをコピーしてください',t)}});
+      }catch(e){current=null;$('status').textContent='入力を確認';$('status').className='pill bad';$('summary').textContent='';$('resultBody').innerHTML=`<div class="error" role="alert">${e.message}</div>`}
+    }
+    function downloadScad(p){
+      const code=`// HAKOPITA - open top box; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    cube([width, depth, height]);\n    translate([wall, wall, base])\n        cube([width - 2*wall, depth - 2*wall, height - base + 0.01]);\n}\n`;
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='hakopita-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+    ids.forEach(id=>$(id).addEventListener('input',render));$('form').addEventListener('submit',e=>e.preventDefault());render();
+  </script>
+</body>
+</html>
