@@ -20,7 +20,7 @@
   <header class="top"><div class="wrap brand"><div class="mark" aria-hidden="true">▣</div><div>TANAHAKO<small>棚に合わせる、箱づくり。</small></div></div></header>
   <main class="wrap">
     <div class="hero"><div class="eyebrow">3D PRINT STORAGE CALCULATOR</div><h1>棚にぴったりの箱、<br>数字を入れるだけ。</h1><p>棚の内寸と分割数から、印刷する箱の外寸・内寸を計算します。単位はすべて mm です。</p></div>
-    <div class="steps" aria-label="使い方"><div class="step"><b>1</b><div><strong>棚を測る</strong>内側の幅・奥行・高さを入力</div></div><div class="step"><b>2</b><div><strong>箱を工夫する</strong>仕切りや穴などを選択</div></div><div class="step"><b>3</b><div><strong>印刷する</strong>STLを保存してBambu Studioへ</div></div></div>
+    <div class="steps" aria-label="使い方"><div class="step"><b>1</b><div><strong>棚を測る</strong>内側の幅・奥行・高さを入力</div></div><div class="step"><b>2</b><div><strong>箱を工夫する</strong>穴や指掛けなどを選択</div></div><div class="step"><b>3</b><div><strong>印刷する</strong>STLを保存してBambu Studioへ</div></div></div>
     <div class="layout">
       <form class="panel controls" id="form" autocomplete="off">
         <section class="section"><div class="section-head"><span class="badge">1</span><h2>棚の内寸</h2></div><p class="hint">箱を入れる場所の内側を測ってください。</p><div class="grid">
@@ -38,15 +38,10 @@
           <div class="field"><label for="wall">壁の厚み</label><div class="input select"><select id="wall"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
           <div class="field"><label for="base">底の厚み</label><div class="input select"><select id="base"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
         </div><div class="full"><label class="switch"><input type="checkbox" id="customHeight">箱の高さを自分で指定する</label><div class="field"><div class="input"><input id="boxHeight" type="number" min="1" step="0.1" value="190" disabled><span class="unit">mm</span></div></div></div><p class="hint" style="margin:12px 0 0">自動では棚の高さから 10 mm を引き、取り出すための余裕を作ります。</p></section>
-        <section class="section"><div class="section-head"><span class="badge">4</span><h2>箱のひと工夫</h2></div><label class="switch"><input type="checkbox" id="cableHole">背面にケーブル穴をつける</label><p class="hint">穴は背面中央です。「手前の逃げ」は内部仕切りを穴から離す距離です。</p><div class="grid two" id="cableFields">
+        <section class="section"><div class="section-head"><span class="badge">4</span><h2>箱のひと工夫</h2></div><label class="switch"><input type="checkbox" id="cableHole">背面にケーブル穴をつける</label><p class="hint">穴は背面中央に開きます。</p><div class="grid" id="cableFields">
           <div class="field"><label for="cableW">穴の幅</label><div class="input"><input id="cableW" type="number" min="5" step="0.1" value="40" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="cableH">穴の高さ</label><div class="input"><input id="cableH" type="number" min="5" step="0.1" value="25" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="cableBottom">底から</label><div class="input"><input id="cableBottom" type="number" min="1" step="0.1" value="15" disabled><span class="unit">mm</span></div></div>
-          <div class="field"><label for="cableRelief">手前の逃げ</label><div class="input"><input id="cableRelief" type="number" min="0" max="30" step="0.1" value="8" disabled><span class="unit">mm</span></div></div>
-        </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="dividers">内部に仕切りをつける</label><p class="hint">区画数を指定すると、等間隔の仕切りを箱と一体で作ります。</p><div class="grid">
-          <div class="field"><label for="divideW">横の区画数</label><div class="input"><input id="divideW" type="number" min="1" max="8" step="1" value="3" disabled><span class="unit">区画</span></div></div>
-          <div class="field"><label for="divideD">奥行の区画数</label><div class="input"><input id="divideD" type="number" min="1" max="8" step="1" value="1" disabled><span class="unit">区画</span></div></div>
-          <div class="field"><label for="dividerH">仕切りの高さ</label><div class="input"><input id="dividerH" type="number" min="5" step="0.1" value="40" disabled><span class="unit">mm</span></div></div>
         </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="fingerNotch">前面に指掛けをつける</label><p class="hint">前面上端を切り欠き、棚や引き出しから取り出しやすくします。</p><div class="grid two">
           <div class="field"><label for="notchW">指掛けの幅</label><div class="input"><input id="notchW" type="number" min="10" step="0.1" value="45" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="notchH">指掛けの深さ</label><div class="input"><input id="notchH" type="number" min="5" step="0.1" value="18" disabled><span class="unit">mm</span></div></div>
@@ -67,7 +62,7 @@
   <footer class="footer"><div class="wrap">TANAHAKO · 試作版　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
-    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','cableRelief','dividers','divideW','divideD','dividerH','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
+    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
     const value = id => Number($(id).value);
     const roundDown = n => Math.floor((n + 1e-8) * 10) / 10;
     const format = n => Number(n.toFixed(1)).toLocaleString('ja-JP', {maximumFractionDigits:1});
@@ -83,11 +78,8 @@
       if(($('customHeight').checked && $('boxHeight').value.trim()==='') || !Number.isFinite(h) || h<=0) throw Error('箱の高さが0以下です。棚の高さか箱の高さを見直してください。');
       if(w<=2*wall || d<=2*wall || h<=base) throw Error('箱の内側が確保できません。分割数・厚み・余白を見直してください。');
       if(h>H) throw Error('箱の高さが棚の高さを超えています。');
-      const cableHole=$('cableHole').checked, cableW=value('cableW'), cableH=value('cableH'), cableBottom=value('cableBottom'), cableRelief=value('cableRelief');
-      if(cableHole && ([cableW,cableH,cableBottom].some(n=>!Number.isFinite(n)||n<=0) || !Number.isFinite(cableRelief)||cableRelief<0||cableRelief>30 || cableW>w-2*wall-4 || cableBottom<=base || cableBottom+cableH>=h-2 || cableRelief>d-2*wall-4)) throw Error('ケーブル穴が箱に収まりません。穴の寸法や手前の逃げを小さくしてください。');
-      const dividers=$('dividers').checked, divideW=value('divideW'), divideD=value('divideD'), dividerH=value('dividerH');
-      if(dividers && (![divideW,divideD].every(n=>Number.isInteger(n)&&n>=1&&n<=8) || divideW===1&&divideD===1 || !Number.isFinite(dividerH)||dividerH<=base||dividerH>=h)) throw Error('仕切りは2区画以上にし、高さを底厚より大きく箱の高さより小さくしてください。');
-      if(dividers && ((w-2*wall-(divideW-1)*wall)/divideW<8 || (d-2*wall-(divideD-1)*wall)/divideD<8)) throw Error('仕切った区画が小さすぎます。区画数を減らしてください。');
+      const cableHole=$('cableHole').checked, cableW=value('cableW'), cableH=value('cableH'), cableBottom=value('cableBottom');
+      if(cableHole && ([cableW,cableH,cableBottom].some(n=>!Number.isFinite(n)||n<=0) || cableW>w-2*wall-4 || cableBottom<=base || cableBottom+cableH>=h-2)) throw Error('ケーブル穴が箱に収まりません。穴の寸法を小さくしてください。');
       const fingerNotch=$('fingerNotch').checked, notchW=value('notchW'), notchH=value('notchH');
       if(fingerNotch && (!Number.isFinite(notchW)||!Number.isFinite(notchH)||notchW<=0||notchH<=0||notchW>w-2*wall-4||notchH>=h-base-2)) throw Error('指掛けが箱に収まりません。幅または深さを小さくしてください。');
       const labelHolder=$('labelHolder').checked, labelW=value('labelW'), labelH=value('labelH'), labelBottom=value('labelBottom'), labelDepth=wall+1.5;
@@ -99,7 +91,7 @@
       let fit=null;
       const printD=d+(labelHolder?labelDepth:0);
       if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&printD<=bd)||(printD<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
-      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,cableRelief,dividers,divideW,divideD,dividerH,fingerNotch,notchW,notchH,labelHolder,labelW,labelH,labelBottom,labelDepth,printD,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
+      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,fingerNotch,notchW,notchH,labelHolder,labelW,labelH,labelBottom,labelDepth,printD,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
     }
     function preview(p){
       const pad=16, vw=560, vh=240, scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D);
@@ -129,23 +121,18 @@
       // 底板は外壁の底面四隅と同じ輪郭で描く。内寸で縮めると、
       // 透明表示では底だけがずれた別部品のように見えてしまう。
       svg+=poly([[0,0,0],[w,0,0],[w,d,0],[0,d,0]],'#e3f0e6','#729c84','fill-opacity=".82"');
-      if(p.dividers){
-        for(let i=1;i<p.divideW;i++){const x=viw+(w-2*viw)*i/p.divideW;svg+=poly([[x,vid,floor],[x,d-vid,floor],[x,d-vid,p.dividerH],[x,vid,p.dividerH]],'#5d9979','#315f49','fill-opacity=".58"');}
-        for(let i=1;i<p.divideD;i++){const y=vid+(d-2*vid)*i/p.divideD;svg+=poly([[viw,y,floor],[w-viw,y,floor],[w-viw,y,p.dividerH],[viw,y,p.dividerH]],'#6ba184','#315f49','fill-opacity=".58"');}
-      }
       svg+=poly([[0,0,0],[w,0,0],[w,0,h],[0,0,h]],'#9fc6ad','#365f4c','fill-opacity=".42"');
       if(p.fingerNotch){const x0=(w-p.notchW)/2,x1=x0+p.notchW,z0=h-p.notchH;svg+=poly([[x0,0,z0],[x1,0,z0],[x1,0,h],[x0,0,h]],'#eff5ee','#eff5ee');svg+=line([x0,0,z0],[x1,0,z0],'#476f5c',1.5)}
       if(p.labelHolder){const x0=(w-p.labelW)/2,x1=x0+p.labelW,y=-p.labelDepth,z0=p.labelBottom,z1=z0+p.labelH;svg+=poly([[x0,y,z0],[x1,y,z0],[x1,y,z1],[x0,y,z1]],'#d4e5d8','#315f49');svg+=line([x0,y,z1],[x1,y,z1],'#315f49',2.5)}
       svg+=line([0,0,h],[w,0,h]);svg+=line([w,0,h],[w,d,h]);svg+=line([w,d,h],[0,d,h]);svg+=line([0,d,h],[0,0,h]);
       svg+=line([viw,vid,h],[w-viw,vid,h],'#2f6049',1.6);svg+=line([w-viw,vid,h],[w-viw,d-vid,h],'#2f6049',1.6);svg+=line([w-viw,d-vid,h],[viw,d-vid,h],'#2f6049',1.6);svg+=line([viw,d-vid,h],[viw,vid,h],'#2f6049',1.6);
       svg+=`<text x="18" y="232" fill="#566c60" font-size="11">外寸 ${format(w)} × ${format(d)} × ${format(h)} mm　壁厚 ${format(p.wall)} mm</text><text x="18" y="244" fill="#839087" font-size="9">※壁厚は見やすいように強調表示</text></svg>`;
-      const keys=[`壁厚 ${format(p.wall)} mm`,p.cableHole&&'ケーブル穴',p.dividers&&`${p.divideW}×${p.divideD}仕切り`,p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean);
+      const keys=[`壁厚 ${format(p.wall)} mm`,p.cableHole&&'ケーブル穴',p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean);
       return `${svg}${keys.length?`<div class="option-key">${keys.map(k=>`<span>${k}</span>`).join('')}</div>`:''}`;
     }
     function render(){
       $('boxHeight').disabled=!$('customHeight').checked;
-      ['cableW','cableH','cableBottom','cableRelief'].forEach(id=>$(id).disabled=!$('cableHole').checked);
-      ['divideW','divideD','dividerH'].forEach(id=>$(id).disabled=!$('dividers').checked);
+      ['cableW','cableH','cableBottom'].forEach(id=>$(id).disabled=!$('cableHole').checked);
       ['notchW','notchH'].forEach(id=>$(id).disabled=!$('fingerNotch').checked);
       ['labelW','labelH','labelBottom'].forEach(id=>$(id).disabled=!$('labelHolder').checked);
       try{
@@ -159,11 +146,10 @@
           <div class="inner"><span>必要な箱の数</span><strong>${p.x*p.y} 個</strong></div>
           <div class="inner"><span>棚の左右 / 前後の余白</span><strong>${format(p.sideW)} / ${format(p.sideD)} mm</strong></div>
           <div class="inner"><span>棚の上の余白</span><strong>${format(p.H-p.h)} mm</strong></div>
-          <div class="inner"><span>ケーブル穴</span><strong>${p.cableHole ? `${format(p.cableW)} × ${format(p.cableH)} mm・逃げ ${format(p.cableRelief)} mm` : 'なし'}</strong></div>
-          <div class="inner"><span>内部仕切り</span><strong>${p.dividers ? `横 ${p.divideW} × 奥行 ${p.divideD} 区画` : 'なし'}</strong></div>
+          <div class="inner"><span>ケーブル穴</span><strong>${p.cableHole ? `${format(p.cableW)} × ${format(p.cableH)} mm` : 'なし'}</strong></div>
           <div class="inner"><span>前面オプション</span><strong>${[p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean).join('・')||'なし'}</strong></div>
-          <div class="preview-title">1個の箱の完成イメージ</div><p class="preview-caption">${p.dividers ? `この1個の箱の中を、横 ${p.divideW} × 奥行 ${p.divideD} の${p.divideW*p.divideD}区画に分けます。` : '棚に置く箱1個分の形です。'}</p><div class="preview model-preview">${boxPreview(p)}</div>
-          <div class="preview-title">棚全体：別々の箱 ${p.x*p.y}個の並び方</div><p class="preview-caption">下図の区画は内部仕切りではなく、1個ずつ別々に印刷する箱です。</p><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
+          <div class="preview-title">1個の箱の完成イメージ</div><p class="preview-caption">棚に置く箱1個分の形です。</p><div class="preview model-preview">${boxPreview(p)}</div>
+          <div class="preview-title">棚全体：別々の箱 ${p.x*p.y}個の並び方</div><p class="preview-caption">1個ずつ別々に印刷する箱を棚に並べます。</p><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
           <div class="note${fitBad?' bad':''}">${fitText}</div>
           <div class="buttons"><button type="button" class="primary" id="downloadStl">この箱のSTL</button><button type="button" id="downloadScad">OpenSCAD</button></div>
           <div class="buttons"><button type="button" id="downloadSample">機能見本STL</button><button type="button" id="copy">寸法をコピー</button></div>
@@ -175,17 +161,11 @@
       }catch(e){current=null;$('status').textContent='入力を確認';$('status').className='pill bad';$('summary').textContent='';$('resultBody').innerHTML=`<div class="error" role="alert">${e.message}</div>`}
     }
     function downloadScad(p){
-      const cableRelief=p.cableRelief??8;
-      const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-${cableRelief}, ${p.cableBottom}])\n        cube([${p.cableW}, wall+${cableRelief}+0.02, ${p.cableH}]);` : '';
+      const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-0.01, ${p.cableBottom}])\n        cube([${p.cableW}, wall+0.02, ${p.cableH}]);` : '';
       const notch=p.fingerNotch ? `\n    translate([(width-${p.notchW})/2, -0.01, height-${p.notchH}])\n        cube([${p.notchW}, wall+0.02, ${p.notchH+0.01}]);` : '';
-      let dividerCode='';
-      if(p.dividers){
-        for(let i=1;i<p.divideW;i++){const x=p.wall+(p.w-2*p.wall)*i/p.divideW-p.wall/2;dividerCode+=`\n        translate([${x}, wall, base]) cube([wall, depth-2*wall, ${p.dividerH-p.base}]);`;}
-        for(let i=1;i<p.divideD;i++){const y=p.wall+(p.d-2*p.wall)*i/p.divideD-p.wall/2;dividerCode+=`\n        translate([wall, ${y}, base]) cube([width-2*wall, wall, ${p.dividerH-p.base}]);`;}
-      }
       let labelCode='';
       if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);\n        translate([${x}, -${d}, ${p.labelBottom}]) rotate([0,90,0]) linear_extrude(height=${p.labelW}) polygon([[0,0],[${d},${d}],[0,${d}]]);`;}
-      const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${dividerCode}${labelCode}\n    }${cable}${notch}\n}\n`;
+      const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${labelCode}\n    }${cable}${notch}\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
     function stlFacet(a,b,c){
@@ -197,15 +177,8 @@
       const quad=(a,b,c,d)=>[[a,b,c],[a,c,d]];
       const unique=a=>[...new Set(a.map(n=>Number(n.toFixed(6))))].sort((a,b)=>a-b);
       let xs=[0,p.wall,p.w-p.wall,p.w],ys=[0,p.wall,p.d-p.wall,p.d],zs=[0,p.base,p.h];
-      const xBands=[],yBands=[];
-      if(p.dividers){
-        zs.push(p.dividerH);
-        for(let i=1;i<p.divideW;i++){const c=p.wall+(p.w-2*p.wall)*i/p.divideW,a=c-p.wall/2,b=c+p.wall/2;xBands.push([a,b]);xs.push(a,b)}
-        for(let i=1;i<p.divideD;i++){const c=p.wall+(p.d-2*p.wall)*i/p.divideD,a=c-p.wall/2,b=c+p.wall/2;yBands.push([a,b]);ys.push(a,b)}
-      }
       let hx0,hx1,hz0,hz1;
-      const cableRelief=p.cableRelief??8;
-      if(p.cableHole){hx0=(p.w-p.cableW)/2;hx1=hx0+p.cableW;hz0=p.cableBottom;hz1=hz0+p.cableH;xs.push(hx0,hx1);ys.push(p.d-p.wall-cableRelief);zs.push(hz0,hz1)}
+      if(p.cableHole){hx0=(p.w-p.cableW)/2;hx1=hx0+p.cableW;hz0=p.cableBottom;hz1=hz0+p.cableH;xs.push(hx0,hx1);zs.push(hz0,hz1)}
       let nx0,nx1,nz0;
       if(p.fingerNotch){nx0=(p.w-p.notchW)/2;nx1=nx0+p.notchW;nz0=p.h-p.notchH;xs.push(nx0,nx1);zs.push(nz0)}
       let lx0,lx1,lz0,lz1,ly0,ly1;
@@ -214,10 +187,9 @@
       const inside=(x,y,z)=>{
         const inBox=x>0&&x<p.w&&y>0&&y<p.d&&z>0&&z<p.h;
         let solid=inBox&&(z<p.base||x<p.wall||x>p.w-p.wall||y<p.wall||y>p.d-p.wall);
-        if(inBox&&p.dividers&&z<p.dividerH&&(xBands.some(([a,b])=>x>a&&x<b)||yBands.some(([a,b])=>y>a&&y<b)))solid=true;
         if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0&&z<lz1&&(y<ly1||x<lx0+p.wall||x>lx1-p.wall||z<lz0+p.wall))solid=true;
         if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0-p.labelDepth-y&&z<lz0)solid=true;
-        if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall-cableRelief&&z>hz0&&z<hz1)solid=false;
+        if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall&&z>hz0&&z<hz1)solid=false;
         if(p.fingerNotch&&x>nx0&&x<nx1&&y>0&&y<p.wall&&z>nz0)solid=false;
         return solid;
       };
@@ -242,7 +214,7 @@
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buildAsciiStl(p)],{type:'model/stl'}));a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
     function downloadSampleStl(){
-      const sample={w:100,d:70,h:50,wall:2,base:2,cableHole:true,cableW:30,cableH:16,cableBottom:8,cableRelief:8,dividers:true,divideW:2,divideD:2,dividerH:25,fingerNotch:true,notchW:35,notchH:15,labelHolder:true,labelW:50,labelH:25,labelBottom:6,labelDepth:3.5};
+      const sample={w:100,d:70,h:50,wall:2,base:2,cableHole:true,cableW:30,cableH:16,cableBottom:8,fingerNotch:true,notchW:35,notchH:15,labelHolder:true,labelW:50,labelH:25,labelBottom:6,labelDepth:3.5};
       saveStl(sample,'tanahako-feature-sample.stl');
     }
     $('printerPreset').addEventListener('change',()=>{if($('printerPreset').value==='p1s'){$('bedW').value=256;$('bedD').value=256;$('bedH').value=256;render()}});
