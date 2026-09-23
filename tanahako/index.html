@@ -126,7 +126,9 @@
       svg+=poly([[0,d,0],[w,d,0],[w,d,h],[0,d,h]],'#b8d4c0','#3f6d57','fill-opacity=".42"');
       if(p.cableHole){const x0=(w-p.cableW)/2,x1=x0+p.cableW,z0=p.cableBottom,z1=z0+p.cableH;svg+=poly([[x0,d,z0],[x1,d,z0],[x1,d,z1],[x0,d,z1]],'#375046','#375046');}
       svg+=poly([[w,0,0],[w,d,0],[w,d,h],[w,0,h]],'#86ae96','#3f6d57','fill-opacity=".38"');
-      svg+=poly([[viw,vid,floor],[w-viw,vid,floor],[w-viw,d-vid,floor],[viw,d-vid,floor]],'#e3f0e6','#729c84','fill-opacity=".9"');
+      // 底板は外壁の底面四隅と同じ輪郭で描く。内寸で縮めると、
+      // 透明表示では底だけがずれた別部品のように見えてしまう。
+      svg+=poly([[0,0,0],[w,0,0],[w,d,0],[0,d,0]],'#e3f0e6','#729c84','fill-opacity=".82"');
       if(p.dividers){
         for(let i=1;i<p.divideW;i++){const x=viw+(w-2*viw)*i/p.divideW;svg+=poly([[x,vid,floor],[x,d-vid,floor],[x,d-vid,p.dividerH],[x,vid,p.dividerH]],'#5d9979','#315f49','fill-opacity=".58"');}
         for(let i=1;i<p.divideD;i++){const y=vid+(d-2*vid)*i/p.divideD;svg+=poly([[viw,y,floor],[w-viw,y,floor],[w-viw,y,p.dividerH],[viw,y,p.dividerH]],'#6ba184','#315f49','fill-opacity=".58"');}
