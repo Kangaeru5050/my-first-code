@@ -112,7 +112,9 @@
       return `<svg viewBox="0 0 ${vw} ${vh}" role="img" aria-label="棚を上から見た、横${p.x}個、奥行${p.y}個の箱の配置図"><rect x="${left}" y="${top}" width="${sw}" height="${sd}" fill="#f0f5ef" stroke="#789586" stroke-width="2" rx="4"/>${boxes}</svg>`;
     }
     function boxPreview(p){
-      const P=(x,y,z)=>[112+(x/p.w)*170-(y/p.d)*65,190+(x/p.w)*28-(y/p.d)*38-(z/p.h)*90];
+      // 幅方向は水平に保ち、奥行だけを左上へ送るキャビネット投影。
+      // 箱そのものの底が傾いているように見えないようにする。
+      const P=(x,y,z)=>[82+(x/p.w)*205-(y/p.d)*55,190-(y/p.d)*35-(z/p.h)*95];
       const points=a=>a.map(v=>P(...v).map(n=>n.toFixed(1)).join(',')).join(' ');
       const poly=(a,fill,stroke='#476f5c',extra='')=>`<polygon points="${points(a)}" fill="${fill}" stroke="${stroke}" stroke-width="1.4" ${extra}/>`;
       const line=(a,b,color='#47735e',width=2)=>{const q=P(...a),r=P(...b);return `<line x1="${q[0]}" y1="${q[1]}" x2="${r[0]}" y2="${r[1]}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`};
