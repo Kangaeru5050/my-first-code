@@ -37,10 +37,10 @@
           <div class="field"><label for="wall">壁の厚み</label><div class="input select"><select id="wall"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
           <div class="field"><label for="base">底の厚み</label><div class="input select"><select id="base"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
         </div><div class="full"><label class="switch"><input type="checkbox" id="customHeight">箱の高さを自分で指定する</label><div class="field"><div class="input"><input id="boxHeight" type="number" min="1" step="0.1" value="190" disabled><span class="unit">mm</span></div></div></div><p class="hint" style="margin:12px 0 0">自動では棚の高さから 10 mm を引き、取り出すための余裕を作ります。</p></section>
-        <section class="section"><div class="section-head"><span class="badge">4</span><h2>プリンターの造形範囲 <span style="font-size:11px;color:#8c9990;font-weight:500">任意</span></h2></div><p class="hint">底を下に置いて印刷する場合の判定です。横向きの90°回転も確認します。</p><div class="grid">
-          <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" placeholder="例 220"><span class="unit">mm</span></div></div>
-          <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" placeholder="例 220"><span class="unit">mm</span></div></div>
-          <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" placeholder="例 250"><span class="unit">mm</span></div></div>
+        <section class="section"><div class="section-head"><span class="badge">4</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。底を下に置き、90°回転した場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
+          <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
         </div></section>
       </form>
       <div class="panel result" aria-live="polite"><div class="result-head"><h2>計算結果</h2><span class="pill" id="status">計算済み</span></div><p class="sub" id="summary">箱を6個並べる設計</p><div id="resultBody"></div></div>
@@ -97,9 +97,10 @@
           <div class="inner"><span>棚の上の余白</span><strong>${format(p.H-p.h)} mm</strong></div>
           <div class="preview-title">棚を上から見た配置</div><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
           <div class="note${fitBad?' bad':''}">${fitText}</div>
-          <div class="buttons"><button type="button" class="primary" id="download">OpenSCADを保存</button><button type="button" id="copy">寸法をコピー</button></div>
-          <p class="fine">小数第1位で切り捨て、棚からはみ出さない値を表示します。内寸は壁と底を引いた空間です。OpenSCADは底が閉じた、ふたのない箱を生成します。STLへの変換にはOpenSCADが必要です。造形範囲の判定はサポート材やブリムの寸法を含みません。</p>`;
-        $('download').addEventListener('click',()=>downloadScad(p));
+          <div class="buttons"><button type="button" class="primary" id="downloadStl">STLを保存</button><button type="button" id="downloadScad">OpenSCAD</button><button type="button" id="copy">寸法をコピー</button></div>
+          <p class="fine">小数第1位で切り捨て、棚からはみ出さない値を表示します。STLは底が閉じた、ふたのない箱です。Bambu Studioへ読み込んでスライスしてください。造形範囲の判定はブリムなどの追加寸法を含みません。</p>`;
+        $('downloadStl').addEventListener('click',()=>downloadStl(p));
+        $('downloadScad').addEventListener('click',()=>downloadScad(p));
         $('copy').addEventListener('click',async()=>{const t=`箱 ${p.x*p.y}個｜外寸 ${format(p.w)} × ${format(p.d)} × ${format(p.h)} mm｜内寸 ${format(p.innerW)} × ${format(p.innerD)} × ${format(p.innerH)} mm`;try{await navigator.clipboard.writeText(t);$('copy').textContent='コピーしました';setTimeout(()=>$('copy')&&($('copy').textContent='寸法をコピー'),1800)}catch{window.prompt('このテキストをコピーしてください',t)}});
       }catch(e){current=null;$('status').textContent='入力を確認';$('status').className='pill bad';$('summary').textContent='';$('resultBody').innerHTML=`<div class="error" role="alert">${e.message}</div>`}
     }
@@ -107,6 +108,34 @@
       const code=`// TANAHAKO - open top box; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    cube([width, depth, height]);\n    translate([wall, wall, base])\n        cube([width - 2*wall, depth - 2*wall, height - base + 0.01]);\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
+    function stlFacet(a,b,c){
+      const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]];
+      const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...n)||1;
+      return `  facet normal ${n[0]/length} ${n[1]/length} ${n[2]/length}\n    outer loop\n      vertex ${a.join(' ')}\n      vertex ${b.join(' ')}\n      vertex ${c.join(' ')}\n    endloop\n  endfacet\n`;
+    }
+    function buildAsciiStl(p){
+      const ob=[[0,0,0],[p.w,0,0],[p.w,p.d,0],[0,p.d,0]];
+      const ot=[[0,0,p.h],[p.w,0,p.h],[p.w,p.d,p.h],[0,p.d,p.h]];
+      const ib=[[p.wall,p.wall,p.base],[p.w-p.wall,p.wall,p.base],[p.w-p.wall,p.d-p.wall,p.base],[p.wall,p.d-p.wall,p.base]];
+      const it=[[p.wall,p.wall,p.h],[p.w-p.wall,p.wall,p.h],[p.w-p.wall,p.d-p.wall,p.h],[p.wall,p.d-p.wall,p.h]];
+      const triangles=[
+        [ob[0],ob[2],ob[1]],[ob[0],ob[3],ob[2]],
+        [ob[0],ob[1],ot[1]],[ob[0],ot[1],ot[0]], [ob[1],ob[2],ot[2]],[ob[1],ot[2],ot[1]],
+        [ob[2],ob[3],ot[3]],[ob[2],ot[3],ot[2]], [ob[3],ob[0],ot[0]],[ob[3],ot[0],ot[3]],
+        [ib[0],ib[1],ib[2]],[ib[0],ib[2],ib[3]],
+        [ib[0],it[0],it[1]],[ib[0],it[1],ib[1]], [ib[1],it[1],it[2]],[ib[1],it[2],ib[2]],
+        [ib[2],it[2],it[3]],[ib[2],it[3],ib[3]], [ib[3],it[3],it[0]],[ib[3],it[0],ib[0]],
+        [ot[0],ot[1],it[1]],[ot[0],it[1],it[0]], [ot[1],ot[2],it[2]],[ot[1],it[2],it[1]],
+        [ot[2],ot[3],it[3]],[ot[2],it[3],it[2]], [ot[3],ot[0],it[0]],[ot[3],it[0],it[3]]
+      ];
+      const body=triangles.map(t=>stlFacet(t[0],t[1],t[2])).join('');
+      return `solid tanahako\n${body}endsolid tanahako\n`;
+    }
+    function downloadStl(p){
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buildAsciiStl(p)],{type:'model/stl'}));a.download='tanahako-box.stl';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+    $('printerPreset').addEventListener('change',()=>{if($('printerPreset').value==='p1s'){$('bedW').value=256;$('bedD').value=256;$('bedH').value=256;render()}});
+    ['bedW','bedD','bedH'].forEach(id=>$(id).addEventListener('input',()=>{$('printerPreset').value='custom'}));
     ids.forEach(id=>$(id).addEventListener('input',render));$('form').addEventListener('submit',e=>e.preventDefault());render();
   </script>
 </body>
