@@ -18,4 +18,4 @@
 
 ## 公開
 
-新しいGitHubリポジトリのルートに `index.html` と `README.md` を置き、GitHub Pagesの公開元を `main` ブランチの `/ (root)` に指定します。
+この試作版は `my-first-code` リポジトリの `hakopita/` フォルダーにあります。GitHub Pagesで公開する場合は、リポジトリの Settings → Pages で公開元を `main` ブランチの `/ (root)` に指定すると、`https://kangaeru5050.github.io/my-first-code/hakopita/` から開けます。公開設定が完了するまではリンクは表示されません。
