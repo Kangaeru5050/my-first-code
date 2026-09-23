@@ -4,48 +4,59 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f5ef">
-  <title>TANAHAKO | 棚に合う箱のサイズを計算</title>
+  <title>TANAHAKO | 棚と引き出しに合う箱を設計</title>
   <style>
     :root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:#26332f;background:#f7f5ef;font-synthesis:none}
     *{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #efab64;outline-offset:2px}
     .wrap{max-width:1160px;margin:auto;padding:0 24px}.top{padding:20px 0;border-bottom:1px solid #e1e4da}.brand{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:900;letter-spacing:.035em}.mark{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#214f42;color:#fff;font-size:23px}.brand small{display:block;font-size:10px;font-weight:600;letter-spacing:.18em;color:#75847c}
     .hero{padding:55px 0 24px}.eyebrow{color:#497869;font-size:12px;font-weight:800;letter-spacing:.15em}.hero h1{font-size:clamp(28px,4vw,44px);line-height:1.35;letter-spacing:-.04em;margin:13px 0 12px}.hero p{color:#65746d;line-height:1.8;margin:0}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 28px}.step{display:flex;gap:10px;align-items:center;background:#eef4ed;border-radius:14px;padding:12px 14px;color:#52665b;font-size:12px;line-height:1.45}.step b{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#205441;color:#fff}.step strong{display:block;color:#263b31;font-size:13px}
     .layout{display:grid;grid-template-columns:minmax(300px,430px) minmax(0,1fr);gap:24px;align-items:start;padding-bottom:70px}.panel{background:white;border:1px solid #e5e8df;border-radius:22px;box-shadow:0 12px 40px rgba(32,60,47,.045)}.controls{padding:26px}.result{padding:28px}
-    .section{padding-bottom:25px;margin-bottom:25px;border-bottom:1px solid #eef0eb}.section:last-child{border:0;padding-bottom:0;margin-bottom:0}.section-head{display:flex;align-items:center;gap:9px;margin-bottom:16px}.badge{background:#e9f2eb;color:#2c6a54;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800}.section h2,.result h2{font-size:17px;margin:0}.hint{font-size:12px;color:#7b8980;line-height:1.6;margin:-8px 0 16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.field label{font-size:12px;font-weight:700;color:#53665a;display:block;margin-bottom:7px}.input{position:relative}.input input,.input select{width:100%;height:47px;border:1px solid #dfe5dd;border-radius:11px;padding:0 33px 0 12px;color:#233b30;background:#fbfcf9;min-width:0}.input input:disabled{background:#f2f4ef;color:#9aa39d}.unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:#9aa49c;pointer-events:none}.select select{appearance:none;padding-right:25px}.select:after{content:'⌄';position:absolute;right:12px;top:9px;color:#75847c;pointer-events:none}.full{margin-top:13px}.switch{display:flex;align-items:center;gap:8px;font-size:13px;color:#51665b;margin-bottom:11px}.switch input{accent-color:#276a54;width:17px;height:17px}
+    .section{padding-bottom:25px;margin-bottom:25px;border-bottom:1px solid #eef0eb}.section:last-child{border:0;padding-bottom:0;margin-bottom:0}.section-head{display:flex;align-items:center;gap:9px;margin-bottom:16px}.badge{background:#e9f2eb;color:#2c6a54;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800}.section h2,.result h2{font-size:17px;margin:0}.hint{font-size:12px;color:#7b8980;line-height:1.6;margin:-8px 0 16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.field label{font-size:12px;font-weight:700;color:#53665a;display:block;margin-bottom:7px}.input{position:relative}.input input,.input select{width:100%;height:47px;border:1px solid #dfe5dd;border-radius:11px;padding:0 33px 0 12px;color:#233b30;background:#fbfcf9;min-width:0}.input input:disabled{background:#f2f4ef;color:#9aa39d}.unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:#9aa49c;pointer-events:none}.select select{appearance:none;padding-right:25px}.select:after{content:'⌄';position:absolute;right:12px;top:9px;color:#75847c;pointer-events:none}.full{margin-top:13px}.switch{display:flex;align-items:center;gap:8px;font-size:13px;color:#51665b;margin-bottom:11px}.switch input{accent-color:#276a54;width:17px;height:17px}.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode-card{display:block;border:2px solid #dfe8e1;border-radius:14px;padding:14px;background:#fbfcf9;cursor:pointer}.mode-card:has(input:checked){border-color:#276a54;background:#edf6ef}.mode-card input{accent-color:#276a54}.mode-card strong{display:block;margin:5px 0 2px}.mode-card small{color:#74847b;line-height:1.45}.hidden{display:none!important}.model-list{display:grid;gap:9px;margin-top:14px}.model-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid #e2e9e3;border-radius:12px;padding:12px}.model-row span{font-size:12px;color:#67786e}.model-row strong{display:block;color:#263b31;font-size:14px}.model-row button{border:0;border-radius:9px;background:#205441;color:white;padding:9px 11px;font-size:11px;font-weight:750}
     .result-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.pill{font-size:11px;font-weight:800;background:#e6f3e8;color:#317055;padding:6px 11px;border-radius:30px}.pill.bad{background:#fff0e7;color:#a7512d}.sub{color:#7a897f;font-size:12px;margin:8px 0 22px}.sizecard{background:#205441;color:white;border-radius:18px;padding:23px 24px}.sizecard .label{font-size:13px;color:#d0ead8}.dimensions{font-size:clamp(24px,3.6vw,37px);letter-spacing:-.05em;font-weight:850;margin:10px 0 2px;white-space:nowrap}.dimensions small{font-size:15px;font-weight:600;letter-spacing:0}.sizecard .caption{font-size:11px;color:#bbd6c6}.inner{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:18px 2px;border-bottom:1px solid #edf0eb}.inner span{font-size:13px;color:#67786e}.inner strong{font-size:17px;letter-spacing:-.03em}.preview-title{font-size:13px;font-weight:750;margin:23px 0 5px}.preview-caption{font-size:11px;color:#718279;line-height:1.55;margin:0 0 10px}.preview{border:1px solid #e5ebe2;border-radius:16px;padding:16px;background:#fcfdfa}.preview svg{display:block;width:100%;height:auto;max-height:250px}.model-preview{background:linear-gradient(145deg,#f6faf5,#edf4ed)}.model-preview svg{max-height:300px}.legend{display:flex;justify-content:space-between;color:#819187;font-size:11px;margin-top:9px}.option-key{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.option-key span{font-size:10px;color:#426454;background:#e2eee5;border-radius:20px;padding:4px 8px}.note{font-size:12px;color:#65766a;background:#f3f7f2;border-radius:11px;padding:11px 13px;margin-top:15px;line-height:1.65}.note.bad{background:#fff1e9;color:#9a4d30}.buttons{display:flex;gap:9px;margin-top:20px}.buttons+.buttons{margin-top:9px}.buttons button{flex:1;min-width:0;border:0;border-radius:11px;background:#eaf2eb;color:#225743;font-weight:750;padding:12px 8px;font-size:12px}.buttons button.primary{background:#205441;color:white}.buttons button:disabled{opacity:.4;cursor:not-allowed}.fine{margin:17px 0 0;font-size:11px;color:#8a978e;line-height:1.7}.footer{border-top:1px solid #e1e5dd;padding:26px 0 40px;font-size:12px;color:#859087}.error{padding:17px;border-radius:12px;background:#fff1e9;color:#984629;line-height:1.6;font-size:13px}
     @media(max-width:800px){.hero{padding:36px 0 20px}.steps{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.controls,.result{padding:22px}.wrap{padding:0 16px}.dimensions{font-size:clamp(23px,6vw,36px)}}@media(max-width:370px){.grid{gap:5px}.input input{padding-left:8px}.dimensions{font-size:22px}}
   </style>
 </head>
 <body>
-  <header class="top"><div class="wrap brand"><div class="mark" aria-hidden="true">▣</div><div>TANAHAKO<small>棚に合わせる、箱づくり。</small></div></div></header>
+  <header class="top"><div class="wrap brand"><div class="mark" aria-hidden="true">▣</div><div>TANAHAKO<small>置き場所に合わせる、箱づくり。</small></div></div></header>
   <main class="wrap">
-    <div class="hero"><div class="eyebrow">3D PRINT STORAGE CALCULATOR</div><h1>棚にぴったりの箱、<br>数字を入れるだけ。</h1><p>棚の内寸と分割数から、印刷する箱の外寸・内寸を計算します。単位はすべて mm です。</p></div>
-    <div class="steps" aria-label="使い方"><div class="step"><b>1</b><div><strong>棚を測る</strong>内側の幅・奥行・高さを入力</div></div><div class="step"><b>2</b><div><strong>箱を工夫する</strong>穴や指掛けなどを選択</div></div><div class="step"><b>3</b><div><strong>印刷する</strong>STLを保存してBambu Studioへ</div></div></div>
+    <div class="hero"><div class="eyebrow">3D PRINT STORAGE CALCULATOR</div><h1>置き場所にぴったりの箱、<br>数字を入れるだけ。</h1><p>棚または引き出しの内寸から、印刷する小箱の寸法と個数を計算します。単位はすべて mm です。</p></div>
+    <div class="steps" aria-label="使い方"><div class="step"><b>1</b><div><strong>場所を選ぶ</strong>棚か引き出しかを選択</div></div><div class="step"><b>2</b><div><strong>内寸を測る</strong>幅・奥行・高さを入力</div></div><div class="step"><b>3</b><div><strong>印刷する</strong>STLを保存してBambu Studioへ</div></div></div>
     <div class="layout">
       <form class="panel controls" id="form" autocomplete="off">
-        <section class="section"><div class="section-head"><span class="badge">1</span><h2>棚の内寸</h2></div><p class="hint">箱を入れる場所の内側を測ってください。</p><div class="grid">
+        <section class="section"><div class="section-head"><span class="badge">1</span><h2>整理する場所</h2></div><div class="mode-grid">
+          <label class="mode-card"><input type="radio" name="mode" id="modeShelf" value="shelf" checked><strong>棚に並べる</strong><small>同じ箱を横一列に置く</small></label>
+          <label class="mode-card"><input type="radio" name="mode" id="modeDrawer" value="drawer"><strong>引き出しを整理</strong><small>異なる小箱を組み合わせる</small></label>
+        </div></section>
+        <section class="section" id="shelfSizeSection"><div class="section-head"><span class="badge">2</span><h2>棚の内寸</h2></div><p class="hint">箱を入れる場所の内側を測ってください。</p><div class="grid">
           <div class="field"><label for="shelfW">幅</label><div class="input"><input id="shelfW" type="number" min="1" step="0.1" value="600" required><span class="unit">mm</span></div></div>
           <div class="field"><label for="shelfD">奥行</label><div class="input"><input id="shelfD" type="number" min="1" step="0.1" value="400" required><span class="unit">mm</span></div></div>
           <div class="field"><label for="shelfH">高さ</label><div class="input"><input id="shelfH" type="number" min="1" step="0.1" value="200" required><span class="unit">mm</span></div></div>
         </div></section>
-        <section class="section"><div class="section-head"><span class="badge">2</span><h2>箱の並べ方</h2></div><p class="hint">横 × 奥行の数を指定します。箱は上が開いた形です。</p><div class="grid two">
+        <section class="section" id="shelfLayoutSection"><div class="section-head"><span class="badge">3</span><h2>箱の並べ方</h2></div><p class="hint">同じ箱を横一列に並べます。出力するSTLは箱1個分です。</p><div class="grid">
           <div class="field"><label for="countW">横に</label><div class="input"><input id="countW" type="number" min="1" max="30" step="1" value="3" required><span class="unit">個</span></div></div>
-          <div class="field"><label for="countD">奥行に</label><div class="input"><input id="countD" type="number" min="1" max="30" step="1" value="2" required><span class="unit">個</span></div></div>
         </div></section>
-        <section class="section"><div class="section-head"><span class="badge">3</span><h2>すき間と厚み</h2></div><div class="grid two">
+        <section class="section hidden" id="drawerSection"><div class="section-head"><span class="badge">2</span><h2>引き出しと小箱の配置</h2></div><p class="hint">各列の段数と幅の比率を、左からカンマ区切りで入力します。</p><div class="grid">
+          <div class="field"><label for="drawerW">引き出しの幅</label><div class="input"><input id="drawerW" type="number" min="1" step="0.1" value="500"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="drawerD">引き出しの奥行</label><div class="input"><input id="drawerD" type="number" min="1" step="0.1" value="350"><span class="unit">mm</span></div></div>
+          <div class="field"><label for="drawerH">使える高さ</label><div class="input"><input id="drawerH" type="number" min="1" step="0.1" value="60"><span class="unit">mm</span></div></div>
+        </div><div class="grid two" style="margin-top:12px">
+          <div class="field"><label for="drawerRows">列ごとの段数</label><div class="input"><input id="drawerRows" type="text" value="3,1,1"></div></div>
+          <div class="field"><label for="drawerRatios">列の幅の比率</label><div class="input"><input id="drawerRatios" type="text" value="3,1,1"></div></div>
+        </div><p class="hint" style="margin:12px 0 0">例：段数「3,1,1」・幅比「3,1,1」で、左に横長箱3個、右に縦長箱2個を作ります。</p></section>
+        <section class="section"><div class="section-head"><span class="badge">4</span><h2>すき間と厚み</h2></div><div class="grid two">
           <div class="field"><label for="edge">棚の端の余白（片側）</label><div class="input"><input id="edge" type="number" min="0" step="0.1" value="2" required><span class="unit">mm</span></div></div>
           <div class="field"><label for="gap">箱どうしのすき間</label><div class="input"><input id="gap" type="number" min="0" step="0.1" value="1" required><span class="unit">mm</span></div></div>
           <div class="field"><label for="wall">壁の厚み</label><div class="input select"><select id="wall"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
           <div class="field"><label for="base">底の厚み</label><div class="input select"><select id="base"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
         </div><div class="full"><label class="switch"><input type="checkbox" id="customHeight">箱の高さを自分で指定する</label><div class="field"><div class="input"><input id="boxHeight" type="number" min="1" step="0.1" value="190" disabled><span class="unit">mm</span></div></div></div><p class="hint" style="margin:12px 0 0">自動では棚の高さから 10 mm を引き、取り出すための余裕を作ります。</p></section>
-        <section class="section"><div class="section-head"><span class="badge">4</span><h2>箱のひと工夫</h2></div><label class="switch"><input type="checkbox" id="cableHole">背面にケーブル穴をつける</label><p class="hint">穴は背面中央に開きます。</p><div class="grid" id="cableFields">
+        <section class="section" id="optionSection"><div class="section-head"><span class="badge">5</span><h2>棚用のひと工夫</h2></div><label class="switch"><input type="checkbox" id="cableHole">背面にケーブル穴をつける</label><p class="hint">穴は背面中央に開きます。</p><div class="grid" id="cableFields">
           <div class="field"><label for="cableW">穴の幅</label><div class="input"><input id="cableW" type="number" min="5" step="0.1" value="40" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="cableH">穴の高さ</label><div class="input"><input id="cableH" type="number" min="5" step="0.1" value="25" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="cableBottom">底から</label><div class="input"><input id="cableBottom" type="number" min="1" step="0.1" value="15" disabled><span class="unit">mm</span></div></div>
         </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="fingerNotch">前面に指掛けをつける</label><p class="hint">前面上端を切り欠き、棚や引き出しから取り出しやすくします。</p><div class="grid two">
           <div class="field"><label for="notchW">指掛けの幅</label><div class="input"><input id="notchW" type="number" min="10" step="0.1" value="45" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="notchH">指掛けの深さ</label><div class="input"><input id="notchH" type="number" min="5" step="0.1" value="18" disabled><span class="unit">mm</span></div></div>
-        </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="labelHolder">前面にラベル差しをつける</label><p class="hint">紙ラベルを上から差し込める、厚さ約1.5 mmのポケットです。</p><div class="grid">
+        </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="labelHolder">前面にラベル差しをつける</label><p class="hint">中央が見えるコの字型レールです。紙ラベルを上から差し込みます。</p><div class="grid">
           <div class="field"><label for="labelW">ラベル幅</label><div class="input"><input id="labelW" type="number" min="20" step="0.1" value="70" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="labelH">ラベル高さ</label><div class="input"><input id="labelH" type="number" min="10" step="0.1" value="30" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="labelBottom">底から</label><div class="input"><input id="labelBottom" type="number" min="2" step="0.1" value="20" disabled><span class="unit">mm</span></div></div>
@@ -62,18 +73,18 @@
   <footer class="footer"><div class="wrap">TANAHAKO · 試作版　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
-    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
+    const ids = ['modeShelf','modeDrawer','shelfW','shelfD','shelfH','countW','drawerW','drawerD','drawerH','drawerRows','drawerRatios','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
     const value = id => Number($(id).value);
     const roundDown = n => Math.floor((n + 1e-8) * 10) / 10;
     const format = n => Number(n.toFixed(1)).toLocaleString('ja-JP', {maximumFractionDigits:1});
     let current = null;
     function calculate(){
-      const W=value('shelfW'), D=value('shelfD'), H=value('shelfH'), x=value('countW'), y=value('countD');
+      const W=value('shelfW'), D=value('shelfD'), H=value('shelfH'), x=value('countW'), y=1;
       const edge=value('edge'), gap=value('gap'), wall=value('wall'), base=value('base');
       const nums=[W,D,H,x,y,edge,gap,wall,base];
-      if(['shelfW','shelfD','shelfH','countW','countD','edge','gap'].some(id=>$(id).value.trim()==='') || nums.some(n=>!Number.isFinite(n)) || [W,D,H].some(n=>n<=0) || [x,y].some(n=>!Number.isInteger(n)||n<1||n>30) || edge<0 || gap<0) throw Error('棚の寸法と分割数を正しい数値で入力してください。');
+      if(['shelfW','shelfD','shelfH','countW','edge','gap'].some(id=>$(id).value.trim()==='') || nums.some(n=>!Number.isFinite(n)) || [W,D,H].some(n=>n<=0) || !Number.isInteger(x)||x<1||x>30 || edge<0 || gap<0) throw Error('棚の寸法と箱の個数を正しい数値で入力してください。');
       const w=roundDown((W-2*edge-(x-1)*gap)/x);
-      const d=roundDown((D-2*edge-(y-1)*gap)/y);
+      const d=roundDown(D-2*edge);
       const h=$('customHeight').checked ? value('boxHeight') : roundDown(H-10);
       if(($('customHeight').checked && $('boxHeight').value.trim()==='') || !Number.isFinite(h) || h<=0) throw Error('箱の高さが0以下です。棚の高さか箱の高さを見直してください。');
       if(w<=2*wall || d<=2*wall || h<=base) throw Error('箱の内側が確保できません。分割数・厚み・余白を見直してください。');
@@ -123,21 +134,76 @@
       svg+=poly([[0,0,0],[w,0,0],[w,d,0],[0,d,0]],'#e3f0e6','#729c84','fill-opacity=".82"');
       svg+=poly([[0,0,0],[w,0,0],[w,0,h],[0,0,h]],'#9fc6ad','#365f4c','fill-opacity=".42"');
       if(p.fingerNotch){const x0=(w-p.notchW)/2,x1=x0+p.notchW,z0=h-p.notchH;svg+=poly([[x0,0,z0],[x1,0,z0],[x1,0,h],[x0,0,h]],'#eff5ee','#eff5ee');svg+=line([x0,0,z0],[x1,0,z0],'#476f5c',1.5)}
-      if(p.labelHolder){const x0=(w-p.labelW)/2,x1=x0+p.labelW,y=-p.labelDepth,z0=p.labelBottom,z1=z0+p.labelH;svg+=poly([[x0,y,z0],[x1,y,z0],[x1,y,z1],[x0,y,z1]],'#d4e5d8','#315f49');svg+=line([x0,y,z1],[x1,y,z1],'#315f49',2.5)}
+      if(p.labelHolder){const x0=(w-p.labelW)/2,x1=x0+p.labelW,y=-p.labelDepth,z0=p.labelBottom,z1=z0+p.labelH,b=Math.min(p.wall*2,p.labelW/5,p.labelH/3);svg+=poly([[x0,y,z0],[x1,y,z0],[x1,y,z0+b],[x0,y,z0+b]],'#d4e5d8','#315f49');svg+=poly([[x0,y,z0],[x0+b,y,z0],[x0+b,y,z1],[x0,y,z1]],'#d4e5d8','#315f49');svg+=poly([[x1-b,y,z0],[x1,y,z0],[x1,y,z1],[x1-b,y,z1]],'#d4e5d8','#315f49')}
       svg+=line([0,0,h],[w,0,h]);svg+=line([w,0,h],[w,d,h]);svg+=line([w,d,h],[0,d,h]);svg+=line([0,d,h],[0,0,h]);
       svg+=line([viw,vid,h],[w-viw,vid,h],'#2f6049',1.6);svg+=line([w-viw,vid,h],[w-viw,d-vid,h],'#2f6049',1.6);svg+=line([w-viw,d-vid,h],[viw,d-vid,h],'#2f6049',1.6);svg+=line([viw,d-vid,h],[viw,vid,h],'#2f6049',1.6);
       svg+=`<text x="18" y="232" fill="#566c60" font-size="11">外寸 ${format(w)} × ${format(d)} × ${format(h)} mm　壁厚 ${format(p.wall)} mm</text><text x="18" y="244" fill="#839087" font-size="9">※壁厚は見やすいように強調表示</text></svg>`;
       const keys=[`壁厚 ${format(p.wall)} mm`,p.cableHole&&'ケーブル穴',p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean);
       return `${svg}${keys.length?`<div class="option-key">${keys.map(k=>`<span>${k}</span>`).join('')}</div>`:''}`;
     }
+    function parseList(id){
+      const values=$(id).value.split(/[、,]/).map(v=>Number(v.trim())).filter(v=>v!==0||v==='0');
+      if(!values.length||values.some(v=>!Number.isFinite(v)||v<=0)) throw Error('段数と幅の比率は、正の数をカンマ区切りで入力してください。');
+      return values;
+    }
+    function calculateDrawer(){
+      const W=value('drawerW'),D=value('drawerD'),H=value('drawerH'),edge=value('edge'),gap=value('gap'),wall=value('wall'),base=value('base');
+      if([W,D,H,edge,gap,wall,base].some(n=>!Number.isFinite(n))||[W,D,H].some(n=>n<=0)||edge<0||gap<0) throw Error('引き出しの寸法・余白・すき間を確認してください。');
+      const rows=parseList('drawerRows');
+      const ratios=parseList('drawerRatios');
+      if(rows.length!==ratios.length) throw Error('段数と幅の比率は、同じ列数だけ入力してください。');
+      if(rows.some(n=>!Number.isInteger(n)||n>12)||rows.length>8) throw Error('段数は1〜12、列数は1〜8で指定してください。');
+      const h=$('customHeight').checked?value('boxHeight'):roundDown(H-5);
+      if(!Number.isFinite(h)||h<=base||h>H) throw Error('小箱の高さを引き出しの高さ以内にしてください。');
+      const usableW=W-2*edge-(rows.length-1)*gap,sum=ratios.reduce((a,b)=>a+b,0);
+      if(usableW<=0) throw Error('横方向の余白とすき間が大きすぎます。');
+      const bw=value('bedW'),bd=value('bedD'),bh=value('bedH');
+      const boxes=[];let x=edge,no=0;
+      rows.forEach((count,col)=>{
+        const w=roundDown(usableW*ratios[col]/sum);
+        const d=roundDown((D-2*edge-(count-1)*gap)/count);
+        if(w<=2*wall||d<=2*wall) throw Error('小箱が細すぎます。段数・幅比・すき間を見直してください。');
+        for(let row=0;row<count;row++){
+          no++; const y=edge+row*(d+gap);
+          const fit=h<=bh&&((w<=bw&&d<=bd)||(d<=bw&&w<=bd));
+          boxes.push({no,col,row,x,y,w,d,h,wall,base,cableHole:false,fingerNotch:false,labelHolder:false,labelDepth:0,fit:fit?'fit':'tooLarge',innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base)});
+        }
+        x+=w+gap;
+      });
+      const grouped=[];
+      boxes.forEach(box=>{const key=`${box.w}|${box.d}|${box.h}`;let g=grouped.find(v=>v.key===key);if(g)g.count++;else grouped.push({key,count:1,box});});
+      return {mode:'drawer',W,D,H,edge,gap,wall,base,h,rows,ratios,boxes,grouped};
+    }
+    function drawerPreview(p){
+      const pad=16,vw=560,vh=360,scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D),left=(vw-p.W*scale)/2,top=(vh-p.D*scale)/2;
+      const boxes=p.boxes.map(b=>`<rect x="${left+b.x*scale}" y="${top+b.y*scale}" width="${b.w*scale}" height="${b.d*scale}" rx="5" fill="#cce6d6" stroke="#43866a" stroke-width="2"/><text x="${left+(b.x+b.w/2)*scale}" y="${top+(b.y+b.d/2)*scale+4}" text-anchor="middle" fill="#315f49" font-size="11" font-weight="700">箱${b.no}</text>`).join('');
+      return `<svg viewBox="0 0 ${vw} ${vh}" role="img" aria-label="引き出しの中に${p.boxes.length}個の小箱を配置した図"><rect x="${left}" y="${top}" width="${p.W*scale}" height="${p.D*scale}" rx="4" fill="#f0f5ef" stroke="#789586" stroke-width="2"/>${boxes}</svg>`;
+    }
+    function renderDrawer(){
+      const p=current=calculateDrawer();
+      $('status').textContent='計算済み';$('status').className='pill';$('summary').textContent=`小箱 ${p.boxes.length}個・モデル ${p.grouped.length}種類`;
+      const tooLarge=p.grouped.some(g=>g.box.fit==='tooLarge');
+      const rows=p.grouped.map((g,i)=>`<div class="model-row"><div><span>モデル ${i+1}・${g.count}個印刷</span><strong>${format(g.box.w)} × ${format(g.box.d)} × ${format(g.box.h)} mm</strong></div><button type="button" data-model="${i}">STLを保存</button></div>`).join('');
+      $('resultBody').innerHTML=`<div class="sizecard"><div class="label">引き出しに入れる小箱</div><div class="dimensions">${p.boxes.length}個・${p.grouped.length}種類</div><div class="caption">同じ寸法は1種類のSTLを必要数だけ印刷</div></div>
+        <div class="preview-title">引き出しを上から見た配置</div><p class="preview-caption">すべて別々の小箱です。箱番号は配置場所を示します。</p><div class="preview">${drawerPreview(p)}</div>
+        <div class="preview-title">印刷するモデル</div><div class="model-list">${rows}</div>
+        <div class="note${tooLarge?' bad':''}">${tooLarge?'造形範囲を超えるモデルがあります。幅比や段数を見直してください。':'✓ すべてのモデルが指定した造形範囲に収まります。'}</div>`;
+      document.querySelectorAll('[data-model]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.model),g=p.grouped[i];saveStl(g.box,`tanahako-drawer-model-${i+1}-x${g.count}.stl`)}));
+    }
     function render(){
+      const drawer=$('modeDrawer').checked;
+      $('shelfSizeSection').classList.toggle('hidden',drawer);
+      $('shelfLayoutSection').classList.toggle('hidden',drawer);
+      $('drawerSection').classList.toggle('hidden',!drawer);
+      $('optionSection').classList.toggle('hidden',drawer);
       $('boxHeight').disabled=!$('customHeight').checked;
       ['cableW','cableH','cableBottom'].forEach(id=>$(id).disabled=!$('cableHole').checked);
       ['notchW','notchH'].forEach(id=>$(id).disabled=!$('fingerNotch').checked);
       ['labelW','labelH','labelBottom'].forEach(id=>$(id).disabled=!$('labelHolder').checked);
       try{
+        if(drawer){renderDrawer();return;}
         const p=current=calculate(); $('status').textContent='計算済み'; $('status').className='pill';
-        $('summary').textContent=`横 ${p.x}個 × 奥行 ${p.y}個 ＝ 合計 ${p.x*p.y}個`;
+        $('summary').textContent=`同じ箱を横一列に ${p.x}個`;
         let fitText='造形範囲を入力すると、印刷できるか確認できます。', fitBad=false;
         if(p.fit==='fit') fitText='✓ 指定した造形範囲に収まります（底を下にして配置）。';
         if(p.fit==='tooLarge'){fitText='指定した造形範囲には収まりません。分割数や高さを見直してください。';fitBad=true}
@@ -164,7 +230,7 @@
       const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-0.01, ${p.cableBottom}])\n        cube([${p.cableW}, wall+0.02, ${p.cableH}]);` : '';
       const notch=p.fingerNotch ? `\n    translate([(width-${p.notchW})/2, -0.01, height-${p.notchH}])\n        cube([${p.notchW}, wall+0.02, ${p.notchH+0.01}]);` : '';
       let labelCode='';
-      if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);\n        translate([${x}, -${d}, ${p.labelBottom}]) rotate([0,90,0]) linear_extrude(height=${p.labelW}) polygon([[0,0],[${d},${d}],[0,${d}]]);`;}
+      if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth,lip=p.wall*2;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${lip}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${lip}, wall, ${p.labelH}]);\n        translate([${x+p.labelW-lip}, -${d}, ${p.labelBottom}]) cube([${lip}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);\n        translate([${x}, -${d}, ${p.labelBottom}]) rotate([0,90,0]) linear_extrude(height=${p.labelW}) polygon([[0,0],[${d},${d}],[0,${d}]]);`;}
       const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${labelCode}\n    }${cable}${notch}\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
@@ -182,12 +248,12 @@
       let nx0,nx1,nz0;
       if(p.fingerNotch){nx0=(p.w-p.notchW)/2;nx1=nx0+p.notchW;nz0=p.h-p.notchH;xs.push(nx0,nx1);zs.push(nz0)}
       let lx0,lx1,lz0,lz1,ly0,ly1;
-      if(p.labelHolder){lx0=(p.w-p.labelW)/2;lx1=lx0+p.labelW;lz0=p.labelBottom;lz1=lz0+p.labelH;ly0=-p.labelDepth;ly1=ly0+p.wall;xs.push(lx0,lx0+p.wall,lx1-p.wall,lx1);ys.push(ly0,ly1);zs.push(lz0,lz0+p.wall,lz1);const steps=Math.ceil(p.labelDepth/.5);for(let i=0;i<=steps;i++){ys.push(ly0+p.labelDepth*i/steps);zs.push(lz0-p.labelDepth+p.labelDepth*i/steps)}}
+      if(p.labelHolder){lx0=(p.w-p.labelW)/2;lx1=lx0+p.labelW;lz0=p.labelBottom;lz1=lz0+p.labelH;ly0=-p.labelDepth;ly1=ly0+p.wall;xs.push(lx0,lx0+p.wall,lx0+2*p.wall,lx1-2*p.wall,lx1-p.wall,lx1);ys.push(ly0,ly1);zs.push(lz0,lz0+p.wall,lz0+2*p.wall,lz1);const steps=Math.ceil(p.labelDepth/.5);for(let i=0;i<=steps;i++){ys.push(ly0+p.labelDepth*i/steps);zs.push(lz0-p.labelDepth+p.labelDepth*i/steps)}}
       xs=unique(xs);ys=unique(ys);zs=unique(zs);
       const inside=(x,y,z)=>{
         const inBox=x>0&&x<p.w&&y>0&&y<p.d&&z>0&&z<p.h;
         let solid=inBox&&(z<p.base||x<p.wall||x>p.w-p.wall||y<p.wall||y>p.d-p.wall);
-        if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0&&z<lz1&&(y<ly1||x<lx0+p.wall||x>lx1-p.wall||z<lz0+p.wall))solid=true;
+        if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0&&z<lz1&&(x<lx0+p.wall||x>lx1-p.wall||z<lz0+p.wall||(y<ly1&&(x<lx0+2*p.wall||x>lx1-2*p.wall||z<lz0+2*p.wall))))solid=true;
         if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0-p.labelDepth-y&&z<lz0)solid=true;
         if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall&&z>hz0&&z<hz1)solid=false;
         if(p.fingerNotch&&x>nx0&&x<nx1&&y>0&&y<p.wall&&z>nz0)solid=false;
