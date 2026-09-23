@@ -45,6 +45,13 @@
           <div class="field"><label for="divideW">横の区画数</label><div class="input"><input id="divideW" type="number" min="1" max="8" step="1" value="3" disabled><span class="unit">区画</span></div></div>
           <div class="field"><label for="divideD">奥行の区画数</label><div class="input"><input id="divideD" type="number" min="1" max="8" step="1" value="1" disabled><span class="unit">区画</span></div></div>
           <div class="field"><label for="dividerH">仕切りの高さ</label><div class="input"><input id="dividerH" type="number" min="5" step="0.1" value="40" disabled><span class="unit">mm</span></div></div>
+        </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="fingerNotch">前面に指掛けをつける</label><p class="hint">前面上端を切り欠き、棚や引き出しから取り出しやすくします。</p><div class="grid two">
+          <div class="field"><label for="notchW">指掛けの幅</label><div class="input"><input id="notchW" type="number" min="10" step="0.1" value="45" disabled><span class="unit">mm</span></div></div>
+          <div class="field"><label for="notchH">指掛けの深さ</label><div class="input"><input id="notchH" type="number" min="5" step="0.1" value="18" disabled><span class="unit">mm</span></div></div>
+        </div><label class="switch" style="margin-top:20px"><input type="checkbox" id="labelHolder">前面にラベル差しをつける</label><p class="hint">紙ラベルを上から差し込める、厚さ約1.5 mmのポケットです。</p><div class="grid">
+          <div class="field"><label for="labelW">ラベル幅</label><div class="input"><input id="labelW" type="number" min="20" step="0.1" value="70" disabled><span class="unit">mm</span></div></div>
+          <div class="field"><label for="labelH">ラベル高さ</label><div class="input"><input id="labelH" type="number" min="10" step="0.1" value="30" disabled><span class="unit">mm</span></div></div>
+          <div class="field"><label for="labelBottom">底から</label><div class="input"><input id="labelBottom" type="number" min="2" step="0.1" value="20" disabled><span class="unit">mm</span></div></div>
         </div></section>
         <section class="section"><div class="section-head"><span class="badge">5</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。底を下に置き、90°回転した場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
           <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
@@ -58,7 +65,7 @@
   <footer class="footer"><div class="wrap">TANAHAKO · 試作版　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
-    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','dividers','divideW','divideD','dividerH','bedW','bedD','bedH'];
+    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','dividers','divideW','divideD','dividerH','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
     const value = id => Number($(id).value);
     const roundDown = n => Math.floor((n + 1e-8) * 10) / 10;
     const format = n => Number(n.toFixed(1)).toLocaleString('ja-JP', {maximumFractionDigits:1});
@@ -79,12 +86,18 @@
       const dividers=$('dividers').checked, divideW=value('divideW'), divideD=value('divideD'), dividerH=value('dividerH');
       if(dividers && (![divideW,divideD].every(n=>Number.isInteger(n)&&n>=1&&n<=8) || divideW===1&&divideD===1 || !Number.isFinite(dividerH)||dividerH<=base||dividerH>=h)) throw Error('仕切りは2区画以上にし、高さを底厚より大きく箱の高さより小さくしてください。');
       if(dividers && ((w-2*wall-(divideW-1)*wall)/divideW<8 || (d-2*wall-(divideD-1)*wall)/divideD<8)) throw Error('仕切った区画が小さすぎます。区画数を減らしてください。');
+      const fingerNotch=$('fingerNotch').checked, notchW=value('notchW'), notchH=value('notchH');
+      if(fingerNotch && (!Number.isFinite(notchW)||!Number.isFinite(notchH)||notchW<=0||notchH<=0||notchW>w-2*wall-4||notchH>=h-base-2)) throw Error('指掛けが箱に収まりません。幅または深さを小さくしてください。');
+      const labelHolder=$('labelHolder').checked, labelW=value('labelW'), labelH=value('labelH'), labelBottom=value('labelBottom'), labelDepth=wall+1.5;
+      if(labelHolder && ([labelW,labelH,labelBottom].some(n=>!Number.isFinite(n)||n<=0)||labelW>w-2*wall-4||labelBottom+labelH>=h-2)) throw Error('ラベル差しが箱に収まりません。幅・高さ・底からの位置を小さくしてください。');
+      if(fingerNotch&&labelHolder&&labelBottom+labelH>h-notchH-2) throw Error('指掛けとラベル差しが重なります。ラベル差しの位置か高さを小さくしてください。');
       const bed=['bedW','bedD','bedH'].map(id=>$(id).value.trim());
       if(bed.some(Boolean) && (!bed.every(Boolean) || bed.some(n=>!Number.isFinite(Number(n))||Number(n)<=0))) throw Error('造形範囲は3辺すべてに正の数値を入力してください。');
       const [bw,bd,bh]=bed.map(Number);
       let fit=null;
-      if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&d<=bd)||(d<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
-      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,dividers,divideW,divideD,dividerH,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
+      const printD=d+(labelHolder?labelDepth:0);
+      if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&printD<=bd)||(printD<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
+      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,dividers,divideW,divideD,dividerH,fingerNotch,notchW,notchH,labelHolder,labelW,labelH,labelBottom,labelDepth,printD,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
     }
     function preview(p){
       const pad=16, vw=560, vh=240, scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D);
@@ -100,6 +113,8 @@
       $('boxHeight').disabled=!$('customHeight').checked;
       ['cableW','cableH','cableBottom'].forEach(id=>$(id).disabled=!$('cableHole').checked);
       ['divideW','divideD','dividerH'].forEach(id=>$(id).disabled=!$('dividers').checked);
+      ['notchW','notchH'].forEach(id=>$(id).disabled=!$('fingerNotch').checked);
+      ['labelW','labelH','labelBottom'].forEach(id=>$(id).disabled=!$('labelHolder').checked);
       try{
         const p=current=calculate(); $('status').textContent='計算済み'; $('status').className='pill';
         $('summary').textContent=`横 ${p.x}個 × 奥行 ${p.y}個 ＝ 合計 ${p.x*p.y}個`;
@@ -113,6 +128,7 @@
           <div class="inner"><span>棚の上の余白</span><strong>${format(p.H-p.h)} mm</strong></div>
           <div class="inner"><span>ケーブル穴</span><strong>${p.cableHole ? `${format(p.cableW)} × ${format(p.cableH)} mm` : 'なし'}</strong></div>
           <div class="inner"><span>内部仕切り</span><strong>${p.dividers ? `横 ${p.divideW} × 奥行 ${p.divideD} 区画` : 'なし'}</strong></div>
+          <div class="inner"><span>前面オプション</span><strong>${[p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean).join('・')||'なし'}</strong></div>
           <div class="preview-title">棚を上から見た配置</div><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
           <div class="note${fitBad?' bad':''}">${fitText}</div>
           <div class="buttons"><button type="button" class="primary" id="downloadStl">STLを保存</button><button type="button" id="downloadScad">OpenSCAD</button><button type="button" id="copy">寸法をコピー</button></div>
@@ -124,12 +140,15 @@
     }
     function downloadScad(p){
       const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-0.01, ${p.cableBottom}])\n        cube([${p.cableW}, wall+0.02, ${p.cableH}]);` : '';
+      const notch=p.fingerNotch ? `\n    translate([(width-${p.notchW})/2, -0.01, height-${p.notchH}])\n        cube([${p.notchW}, wall+0.02, ${p.notchH+0.01}]);` : '';
       let dividerCode='';
       if(p.dividers){
         for(let i=1;i<p.divideW;i++){const x=p.wall+(p.w-2*p.wall)*i/p.divideW-p.wall/2;dividerCode+=`\n        translate([${x}, wall, base]) cube([wall, depth-2*wall, ${p.dividerH-p.base}]);`;}
         for(let i=1;i<p.divideD;i++){const y=p.wall+(p.d-2*p.wall)*i/p.divideD-p.wall/2;dividerCode+=`\n        translate([wall, ${y}, base]) cube([width-2*wall, wall, ${p.dividerH-p.base}]);`;}
       }
-      const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${dividerCode}\n    }${cable}\n}\n`;
+      let labelCode='';
+      if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);`;}
+      const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${dividerCode}${labelCode}\n    }${cable}${notch}\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
     function stlFacet(a,b,c){
@@ -149,11 +168,18 @@
       }
       let hx0,hx1,hz0,hz1;
       if(p.cableHole){hx0=(p.w-p.cableW)/2;hx1=hx0+p.cableW;hz0=p.cableBottom;hz1=hz0+p.cableH;xs.push(hx0,hx1);zs.push(hz0,hz1)}
+      let nx0,nx1,nz0;
+      if(p.fingerNotch){nx0=(p.w-p.notchW)/2;nx1=nx0+p.notchW;nz0=p.h-p.notchH;xs.push(nx0,nx1);zs.push(nz0)}
+      let lx0,lx1,lz0,lz1,ly0,ly1;
+      if(p.labelHolder){lx0=(p.w-p.labelW)/2;lx1=lx0+p.labelW;lz0=p.labelBottom;lz1=lz0+p.labelH;ly0=-p.labelDepth;ly1=ly0+p.wall;xs.push(lx0,lx0+p.wall,lx1-p.wall,lx1);ys.push(ly0,ly1);zs.push(lz0,lz0+p.wall,lz1)}
       xs=unique(xs);ys=unique(ys);zs=unique(zs);
       const inside=(x,y,z)=>{
-        let solid=z<p.base||x<p.wall||x>p.w-p.wall||y<p.wall||y>p.d-p.wall;
-        if(p.dividers&&z<p.dividerH&&(xBands.some(([a,b])=>x>a&&x<b)||yBands.some(([a,b])=>y>a&&y<b)))solid=true;
+        const inBox=x>0&&x<p.w&&y>0&&y<p.d&&z>0&&z<p.h;
+        let solid=inBox&&(z<p.base||x<p.wall||x>p.w-p.wall||y<p.wall||y>p.d-p.wall);
+        if(inBox&&p.dividers&&z<p.dividerH&&(xBands.some(([a,b])=>x>a&&x<b)||yBands.some(([a,b])=>y>a&&y<b)))solid=true;
+        if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0&&z<lz1&&(y<ly1||x<lx0+p.wall||x>lx1-p.wall||z<lz0+p.wall))solid=true;
         if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall&&z>hz0&&z<hz1)solid=false;
+        if(p.fingerNotch&&x>nx0&&x<nx1&&y>0&&y<p.wall&&z>nz0)solid=false;
         return solid;
       };
       const occupied=[];for(let i=0;i<xs.length-1;i++){occupied[i]=[];for(let j=0;j<ys.length-1;j++){occupied[i][j]=[];for(let k=0;k<zs.length-1;k++)occupied[i][j][k]=inside((xs[i]+xs[i+1])/2,(ys[j]+ys[j+1])/2,(zs[k]+zs[k+1])/2)}}
