@@ -89,7 +89,7 @@
       const fingerNotch=$('fingerNotch').checked, notchW=value('notchW'), notchH=value('notchH');
       if(fingerNotch && (!Number.isFinite(notchW)||!Number.isFinite(notchH)||notchW<=0||notchH<=0||notchW>w-2*wall-4||notchH>=h-base-2)) throw Error('指掛けが箱に収まりません。幅または深さを小さくしてください。');
       const labelHolder=$('labelHolder').checked, labelW=value('labelW'), labelH=value('labelH'), labelBottom=value('labelBottom'), labelDepth=wall+1.5;
-      if(labelHolder && ([labelW,labelH,labelBottom].some(n=>!Number.isFinite(n)||n<=0)||labelW>w-2*wall-4||labelBottom+labelH>=h-2)) throw Error('ラベル差しが箱に収まりません。幅・高さ・底からの位置を小さくしてください。');
+      if(labelHolder && ([labelW,labelH,labelBottom].some(n=>!Number.isFinite(n)||n<=0)||labelW>w-2*wall-4||labelBottom<=labelDepth||labelBottom+labelH>=h-2)) throw Error('ラベル差しが箱に収まりません。幅・高さ・底からの位置を見直してください。');
       if(fingerNotch&&labelHolder&&labelBottom+labelH>h-notchH-2) throw Error('指掛けとラベル差しが重なります。ラベル差しの位置か高さを小さくしてください。');
       const bed=['bedW','bedD','bedH'].map(id=>$(id).value.trim());
       if(bed.some(Boolean) && (!bed.every(Boolean) || bed.some(n=>!Number.isFinite(Number(n))||Number(n)<=0))) throw Error('造形範囲は3辺すべてに正の数値を入力してください。');
@@ -141,7 +141,8 @@
       }catch(e){current=null;$('status').textContent='入力を確認';$('status').className='pill bad';$('summary').textContent='';$('resultBody').innerHTML=`<div class="error" role="alert">${e.message}</div>`}
     }
     function downloadScad(p){
-      const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-0.01, ${p.cableBottom}])\n        cube([${p.cableW}, wall+0.02, ${p.cableH}]);` : '';
+      const cableRelief=4;
+      const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-${cableRelief}, ${p.cableBottom}])\n        cube([${p.cableW}, wall+${cableRelief}+0.02, ${p.cableH}]);` : '';
       const notch=p.fingerNotch ? `\n    translate([(width-${p.notchW})/2, -0.01, height-${p.notchH}])\n        cube([${p.notchW}, wall+0.02, ${p.notchH+0.01}]);` : '';
       let dividerCode='';
       if(p.dividers){
@@ -149,7 +150,7 @@
         for(let i=1;i<p.divideD;i++){const y=p.wall+(p.d-2*p.wall)*i/p.divideD-p.wall/2;dividerCode+=`\n        translate([wall, ${y}, base]) cube([width-2*wall, wall, ${p.dividerH-p.base}]);`;}
       }
       let labelCode='';
-      if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);`;}
+      if(p.labelHolder){const x=(p.w-p.labelW)/2,d=p.labelDepth;labelCode=`\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, wall, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x+p.labelW-p.wall}, -${d}, ${p.labelBottom}]) cube([wall, ${d}, ${p.labelH}]);\n        translate([${x}, -${d}, ${p.labelBottom}]) cube([${p.labelW}, ${d}, wall]);\n        translate([${x}, -${d}, ${p.labelBottom}]) rotate([0,90,0]) linear_extrude(height=${p.labelW}) polygon([[0,0],[${d},${d}],[0,${d}]]);`;}
       const code=`// TANAHAKO - open top organizer; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    union() {\n        difference() {\n            cube([width, depth, height]);\n            translate([wall, wall, base]) cube([width-2*wall, depth-2*wall, height-base+0.01]);\n        }${dividerCode}${labelCode}\n    }${cable}${notch}\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
@@ -169,18 +170,20 @@
         for(let i=1;i<p.divideD;i++){const c=p.wall+(p.d-2*p.wall)*i/p.divideD,a=c-p.wall/2,b=c+p.wall/2;yBands.push([a,b]);ys.push(a,b)}
       }
       let hx0,hx1,hz0,hz1;
-      if(p.cableHole){hx0=(p.w-p.cableW)/2;hx1=hx0+p.cableW;hz0=p.cableBottom;hz1=hz0+p.cableH;xs.push(hx0,hx1);zs.push(hz0,hz1)}
+      const cableRelief=4;
+      if(p.cableHole){hx0=(p.w-p.cableW)/2;hx1=hx0+p.cableW;hz0=p.cableBottom;hz1=hz0+p.cableH;xs.push(hx0,hx1);ys.push(p.d-p.wall-cableRelief);zs.push(hz0,hz1)}
       let nx0,nx1,nz0;
       if(p.fingerNotch){nx0=(p.w-p.notchW)/2;nx1=nx0+p.notchW;nz0=p.h-p.notchH;xs.push(nx0,nx1);zs.push(nz0)}
       let lx0,lx1,lz0,lz1,ly0,ly1;
-      if(p.labelHolder){lx0=(p.w-p.labelW)/2;lx1=lx0+p.labelW;lz0=p.labelBottom;lz1=lz0+p.labelH;ly0=-p.labelDepth;ly1=ly0+p.wall;xs.push(lx0,lx0+p.wall,lx1-p.wall,lx1);ys.push(ly0,ly1);zs.push(lz0,lz0+p.wall,lz1)}
+      if(p.labelHolder){lx0=(p.w-p.labelW)/2;lx1=lx0+p.labelW;lz0=p.labelBottom;lz1=lz0+p.labelH;ly0=-p.labelDepth;ly1=ly0+p.wall;xs.push(lx0,lx0+p.wall,lx1-p.wall,lx1);ys.push(ly0,ly1);zs.push(lz0,lz0+p.wall,lz1);const steps=Math.ceil(p.labelDepth/.5);for(let i=0;i<=steps;i++){ys.push(ly0+p.labelDepth*i/steps);zs.push(lz0-p.labelDepth+p.labelDepth*i/steps)}}
       xs=unique(xs);ys=unique(ys);zs=unique(zs);
       const inside=(x,y,z)=>{
         const inBox=x>0&&x<p.w&&y>0&&y<p.d&&z>0&&z<p.h;
         let solid=inBox&&(z<p.base||x<p.wall||x>p.w-p.wall||y<p.wall||y>p.d-p.wall);
         if(inBox&&p.dividers&&z<p.dividerH&&(xBands.some(([a,b])=>x>a&&x<b)||yBands.some(([a,b])=>y>a&&y<b)))solid=true;
         if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0&&z<lz1&&(y<ly1||x<lx0+p.wall||x>lx1-p.wall||z<lz0+p.wall))solid=true;
-        if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall&&z>hz0&&z<hz1)solid=false;
+        if(p.labelHolder&&x>lx0&&x<lx1&&y>ly0&&y<0&&z>lz0-p.labelDepth-y&&z<lz0)solid=true;
+        if(p.cableHole&&x>hx0&&x<hx1&&y>p.d-p.wall-cableRelief&&z>hz0&&z<hz1)solid=false;
         if(p.fingerNotch&&x>nx0&&x<nx1&&y>0&&y<p.wall&&z>nz0)solid=false;
         return solid;
       };
