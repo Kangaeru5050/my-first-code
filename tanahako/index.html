@@ -37,7 +37,12 @@
           <div class="field"><label for="wall">壁の厚み</label><div class="input select"><select id="wall"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
           <div class="field"><label for="base">底の厚み</label><div class="input select"><select id="base"><option value="1.2">1.2 mm</option><option value="1.6">1.6 mm</option><option value="2" selected>2.0 mm</option><option value="2.4">2.4 mm</option><option value="3">3.0 mm</option></select></div></div>
         </div><div class="full"><label class="switch"><input type="checkbox" id="customHeight">箱の高さを自分で指定する</label><div class="field"><div class="input"><input id="boxHeight" type="number" min="1" step="0.1" value="190" disabled><span class="unit">mm</span></div></div></div><p class="hint" style="margin:12px 0 0">自動では棚の高さから 10 mm を引き、取り出すための余裕を作ります。</p></section>
-        <section class="section"><div class="section-head"><span class="badge">4</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。底を下に置き、90°回転した場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
+        <section class="section"><div class="section-head"><span class="badge">4</span><h2>箱のひと工夫</h2></div><label class="switch"><input type="checkbox" id="cableHole">背面にケーブル穴をつける</label><p class="hint">穴は背面の中央に配置します。幅・高さ・底からの位置を指定できます。</p><div class="grid" id="cableFields">
+          <div class="field"><label for="cableW">穴の幅</label><div class="input"><input id="cableW" type="number" min="5" step="0.1" value="40" disabled><span class="unit">mm</span></div></div>
+          <div class="field"><label for="cableH">穴の高さ</label><div class="input"><input id="cableH" type="number" min="5" step="0.1" value="25" disabled><span class="unit">mm</span></div></div>
+          <div class="field"><label for="cableBottom">底から</label><div class="input"><input id="cableBottom" type="number" min="1" step="0.1" value="15" disabled><span class="unit">mm</span></div></div>
+        </div></section>
+        <section class="section"><div class="section-head"><span class="badge">5</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。底を下に置き、90°回転した場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
           <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
@@ -49,7 +54,7 @@
   <footer class="footer"><div class="wrap">TANAHAKO · 試作版　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
-    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','bedW','bedD','bedH'];
+    const ids = ['shelfW','shelfD','shelfH','countW','countD','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','bedW','bedD','bedH'];
     const value = id => Number($(id).value);
     const roundDown = n => Math.floor((n + 1e-8) * 10) / 10;
     const format = n => Number(n.toFixed(1)).toLocaleString('ja-JP', {maximumFractionDigits:1});
@@ -65,12 +70,14 @@
       if(($('customHeight').checked && $('boxHeight').value.trim()==='') || !Number.isFinite(h) || h<=0) throw Error('箱の高さが0以下です。棚の高さか箱の高さを見直してください。');
       if(w<=2*wall || d<=2*wall || h<=base) throw Error('箱の内側が確保できません。分割数・厚み・余白を見直してください。');
       if(h>H) throw Error('箱の高さが棚の高さを超えています。');
+      const cableHole=$('cableHole').checked, cableW=value('cableW'), cableH=value('cableH'), cableBottom=value('cableBottom');
+      if(cableHole && ([cableW,cableH,cableBottom].some(n=>!Number.isFinite(n)||n<=0) || cableW>w-2*wall-4 || cableBottom<=base || cableBottom+cableH>=h-2)) throw Error('ケーブル穴が箱に収まりません。穴の幅・高さ・底からの位置を小さくしてください。');
       const bed=['bedW','bedD','bedH'].map(id=>$(id).value.trim());
       if(bed.some(Boolean) && (!bed.every(Boolean) || bed.some(n=>!Number.isFinite(Number(n))||Number(n)<=0))) throw Error('造形範囲は3辺すべてに正の数値を入力してください。');
       const [bw,bd,bh]=bed.map(Number);
       let fit=null;
       if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&d<=bd)||(d<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
-      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
+      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
     }
     function preview(p){
       const pad=16, vw=560, vh=240, scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D);
@@ -84,6 +91,7 @@
     }
     function render(){
       $('boxHeight').disabled=!$('customHeight').checked;
+      ['cableW','cableH','cableBottom'].forEach(id=>$(id).disabled=!$('cableHole').checked);
       try{
         const p=current=calculate(); $('status').textContent='計算済み'; $('status').className='pill';
         $('summary').textContent=`横 ${p.x}個 × 奥行 ${p.y}個 ＝ 合計 ${p.x*p.y}個`;
@@ -95,17 +103,19 @@
           <div class="inner"><span>必要な箱の数</span><strong>${p.x*p.y} 個</strong></div>
           <div class="inner"><span>棚の左右 / 前後の余白</span><strong>${format(p.sideW)} / ${format(p.sideD)} mm</strong></div>
           <div class="inner"><span>棚の上の余白</span><strong>${format(p.H-p.h)} mm</strong></div>
+          <div class="inner"><span>ケーブル穴</span><strong>${p.cableHole ? `${format(p.cableW)} × ${format(p.cableH)} mm` : 'なし'}</strong></div>
           <div class="preview-title">棚を上から見た配置</div><div class="preview">${preview(p)}<div class="legend"><span>横 ${p.x}個</span><span>奥行 ${p.y}個</span></div></div>
           <div class="note${fitBad?' bad':''}">${fitText}</div>
           <div class="buttons"><button type="button" class="primary" id="downloadStl">STLを保存</button><button type="button" id="downloadScad">OpenSCAD</button><button type="button" id="copy">寸法をコピー</button></div>
-          <p class="fine">小数第1位で切り捨て、棚からはみ出さない値を表示します。STLは底が閉じた、ふたのない箱です。Bambu Studioへ読み込んでスライスしてください。造形範囲の判定はブリムなどの追加寸法を含みません。</p>`;
+          <p class="fine">小数第1位で切り捨て、棚からはみ出さない値を表示します。STLは底が閉じた、ふたのない箱です。ケーブル穴を選ぶと背面中央に貫通穴を作ります。Bambu Studioへ読み込んでスライスしてください。</p>`;
         $('downloadStl').addEventListener('click',()=>downloadStl(p));
         $('downloadScad').addEventListener('click',()=>downloadScad(p));
         $('copy').addEventListener('click',async()=>{const t=`箱 ${p.x*p.y}個｜外寸 ${format(p.w)} × ${format(p.d)} × ${format(p.h)} mm｜内寸 ${format(p.innerW)} × ${format(p.innerD)} × ${format(p.innerH)} mm`;try{await navigator.clipboard.writeText(t);$('copy').textContent='コピーしました';setTimeout(()=>$('copy')&&($('copy').textContent='寸法をコピー'),1800)}catch{window.prompt('このテキストをコピーしてください',t)}});
       }catch(e){current=null;$('status').textContent='入力を確認';$('status').className='pill bad';$('summary').textContent='';$('resultBody').innerHTML=`<div class="error" role="alert">${e.message}</div>`}
     }
     function downloadScad(p){
-      const code=`// TANAHAKO - open top box; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    cube([width, depth, height]);\n    translate([wall, wall, base])\n        cube([width - 2*wall, depth - 2*wall, height - base + 0.01]);\n}\n`;
+      const cable=p.cableHole ? `\n    translate([(width-${p.cableW})/2, depth-wall-0.01, ${p.cableBottom}])\n        cube([${p.cableW}, wall+0.02, ${p.cableH}]);` : '';
+      const code=`// TANAHAKO - open top box; units: mm\nwidth = ${p.w};\ndepth = ${p.d};\nheight = ${p.h};\nwall = ${p.wall};\nbase = ${p.base};\n\ndifference() {\n    cube([width, depth, height]);\n    translate([wall, wall, base])\n        cube([width - 2*wall, depth - 2*wall, height - base + 0.01]);${cable}\n}\n`;
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));a.download='tanahako-box.scad';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
     function stlFacet(a,b,c){
@@ -118,16 +128,40 @@
       const ot=[[0,0,p.h],[p.w,0,p.h],[p.w,p.d,p.h],[0,p.d,p.h]];
       const ib=[[p.wall,p.wall,p.base],[p.w-p.wall,p.wall,p.base],[p.w-p.wall,p.d-p.wall,p.base],[p.wall,p.d-p.wall,p.base]];
       const it=[[p.wall,p.wall,p.h],[p.w-p.wall,p.wall,p.h],[p.w-p.wall,p.d-p.wall,p.h],[p.wall,p.d-p.wall,p.h]];
-      const triangles=[
+      let triangles=[
         [ob[0],ob[2],ob[1]],[ob[0],ob[3],ob[2]],
         [ob[0],ob[1],ot[1]],[ob[0],ot[1],ot[0]], [ob[1],ob[2],ot[2]],[ob[1],ot[2],ot[1]],
-        [ob[2],ob[3],ot[3]],[ob[2],ot[3],ot[2]], [ob[3],ob[0],ot[0]],[ob[3],ot[0],ot[3]],
+        [ob[3],ob[0],ot[0]],[ob[3],ot[0],ot[3]],
         [ib[0],ib[1],ib[2]],[ib[0],ib[2],ib[3]],
         [ib[0],it[0],it[1]],[ib[0],it[1],ib[1]], [ib[1],it[1],it[2]],[ib[1],it[2],ib[2]],
-        [ib[2],it[2],it[3]],[ib[2],it[3],ib[3]], [ib[3],it[3],it[0]],[ib[3],it[0],ib[0]],
+        [ib[3],it[3],it[0]],[ib[3],it[0],ib[0]],
         [ot[0],ot[1],it[1]],[ot[0],it[1],it[0]], [ot[1],ot[2],it[2]],[ot[1],it[2],it[1]],
         [ot[2],ot[3],it[3]],[ot[2],it[3],it[2]], [ot[3],ot[0],it[0]],[ot[3],it[0],it[3]]
       ];
+      const quad=(a,b,c,d)=>[[a,b,c],[a,c,d]];
+      if(!p.cableHole){
+        triangles.push([ob[2],ob[3],ot[3]],[ob[2],ot[3],ot[2]],[ib[2],it[2],it[3]],[ib[2],it[3],ib[3]]);
+      }else{
+        const x0=(p.w-p.cableW)/2,x1=x0+p.cableW,z0=p.cableBottom,z1=z0+p.cableH,yo=p.d,yi=p.d-p.wall;
+        const xs=[0,p.wall,x0,x1,p.w-p.wall,p.w],ys=[0,p.wall,yi,yo],zs=[0,p.base,z0,z1,p.h];
+        triangles=[];
+        const cells=(a,b,make,reverse=false,skip=()=>false)=>{for(let i=0;i<a.length-1;i++)for(let j=0;j<b.length-1;j++){if(skip(a[i],a[i+1],b[j],b[j+1]))continue;const q=make(a[i],a[i+1],b[j],b[j+1]);triangles.push(...(reverse?quad(q[0],q[3],q[2],q[1]):quad(...q)))}};
+        const xz=y=> (xa,xb,za,zb)=>[[xa,y,za],[xb,y,za],[xb,y,zb],[xa,y,zb]];
+        const yz=x=> (ya,yb,za,zb)=>[[x,ya,za],[x,yb,za],[x,yb,zb],[x,ya,zb]];
+        const xy=z=> (xa,xb,ya,yb)=>[[xa,ya,z],[xb,ya,z],[xb,yb,z],[xa,yb,z]];
+        const hole=(xa,xb,za,zb)=>xa>=x0&&xb<=x1&&za>=z0&&zb<=z1;
+        cells(xs,ys,xy(0),true); cells(xs,zs,xz(0)); cells(xs,zs,xz(yo),true,hole);
+        cells(ys,zs,yz(0),true); cells(ys,zs,yz(p.w));
+        const ixs=xs.filter(x=>x>=p.wall&&x<=p.w-p.wall), iys=ys.filter(y=>y>=p.wall&&y<=yi), izs=zs.filter(z=>z>=p.base);
+        cells(ixs,iys,xy(p.base)); cells(ixs,izs,xz(p.wall),true); cells(ixs,izs,xz(yi),false,hole);
+        cells(iys,izs,yz(p.wall)); cells(iys,izs,yz(p.w-p.wall),true);
+        cells(xs,[0,p.wall],xy(p.h)); cells(xs,[yi,yo],xy(p.h));
+        cells([0,p.wall],iys,xy(p.h)); cells([p.w-p.wall,p.w],iys,xy(p.h));
+        triangles.push(...quad([x0,yi,z0],[x0,yo,z0],[x0,yo,z1],[x0,yi,z1]));
+        triangles.push(...quad([x1,yi,z0],[x1,yi,z1],[x1,yo,z1],[x1,yo,z0]));
+        triangles.push(...quad([x0,yi,z0],[x1,yi,z0],[x1,yo,z0],[x0,yo,z0]));
+        triangles.push(...quad([x0,yi,z1],[x0,yo,z1],[x1,yo,z1],[x1,yi,z1]));
+      }
       const body=triangles.map(t=>stlFacet(t[0],t[1],t[2])).join('');
       return `solid tanahako\n${body}endsolid tanahako\n`;
     }
