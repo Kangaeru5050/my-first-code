@@ -124,9 +124,16 @@
       return `<svg viewBox="0 0 ${vw} ${vh}" role="img" aria-label="棚に置く別々の箱${p.x*p.y}個を、横${p.x}個、奥行${p.y}個に並べた配置図"><rect x="${left}" y="${top}" width="${sw}" height="${sd}" fill="#f0f5ef" stroke="#789586" stroke-width="2" rx="4"/>${boxes}</svg>`;
     }
     function boxPreview(p){
-      // 幅方向は水平に保ち、奥行だけを左上へ送るキャビネット投影。
-      // 箱そのものの底が傾いているように見えないようにする。
-      const P=(x,y,z)=>[82+(x/p.w)*205-(y/p.d)*55,190-(y/p.d)*35-(z/p.h)*95];
+      // 実寸の幅・奥行・高さへ同じ倍率を掛けて描く。
+      // 各方向を個別に正規化すると、細長い箱も正方形に近く見えてしまう。
+      const depthX=.35,depthY=.58;
+      const rawW=p.w+p.d*depthX,rawH=p.h+p.d*depthY;
+      const drawingScale=Math.min(270/rawW,158/rawH);
+      const drawingW=rawW*drawingScale,left=(340-drawingW)/2,bottom=194;
+      const P=(x,y,z)=>[
+        left+(x+(p.d-y)*depthX)*drawingScale,
+        bottom-(z+y*depthY)*drawingScale
+      ];
       const points=a=>a.map(v=>P(...v).map(n=>n.toFixed(1)).join(',')).join(' ');
       const poly=(a,fill,stroke='#476f5c',extra='')=>`<polygon points="${points(a)}" fill="${fill}" stroke="${stroke}" stroke-width="1.4" ${extra}/>`;
       const line=(a,b,color='#47735e',width=2)=>{const q=P(...a),r=P(...b);return `<line x1="${q[0]}" y1="${q[1]}" x2="${r[0]}" y2="${r[1]}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`};
