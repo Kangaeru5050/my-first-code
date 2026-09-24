@@ -62,7 +62,7 @@
           <div class="field"><label for="labelH">ラベル高さ</label><div class="input"><input id="labelH" type="number" min="10" step="0.1" value="30" disabled><span class="unit">mm</span></div></div>
           <div class="field"><label for="labelBottom">底から</label><div class="input"><input id="labelBottom" type="number" min="2" step="0.1" value="20" disabled><span class="unit">mm</span></div></div>
         </div></section>
-        <section class="section"><div class="section-head"><span class="badge">5</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。底を下に置き、90°回転した場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
+        <section class="section"><div class="section-head"><span class="badge">5</span><h2>プリンターの造形範囲</h2></div><p class="hint">Bambu Lab P1Sを初期設定にしました。箱1個を底を下に置き、斜めに配置する場合も判定します。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option></select></div></div><div class="grid">
           <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
@@ -85,6 +85,19 @@
       {id:4,x:.6,y:0,w:.2,h:1},{id:5,x:.8,y:0,w:.2,h:1}
     ];
     let drawerCells=sampleDrawerCells();
+    function findBedPlacement(w,d,h,bw,bd,bh){
+      if(![w,d,h,bw,bd,bh].every(Number.isFinite)||h>bh)return null;
+      let best=null;
+      for(let tenth=0;tenth<=900;tenth++){
+        const angle=tenth/10,rad=angle*Math.PI/180,c=Math.cos(rad),s=Math.sin(rad);
+        const placedW=w*c+d*s,placedD=w*s+d*c;
+        if(placedW<=bw+1e-7&&placedD<=bd+1e-7){
+          const margin=Math.min(bw-placedW,bd-placedD,bh-h);
+          if(!best||margin>best.margin)best={angle,placedW,placedD,margin};
+        }
+      }
+      return best;
+    }
     function calculate(){
       const W=value('shelfW'), D=value('shelfD'), H=value('shelfH'), x=value('countW'), y=1;
       const edge=value('edge'), gap=value('gap'), wall=value('wall'), base=value('base');
@@ -106,10 +119,10 @@
       const bed=['bedW','bedD','bedH'].map(id=>$(id).value.trim());
       if(bed.some(Boolean) && (!bed.every(Boolean) || bed.some(n=>!Number.isFinite(Number(n))||Number(n)<=0))) throw Error('造形範囲は3辺すべてに正の数値を入力してください。');
       const [bw,bd,bh]=bed.map(Number);
-      let fit=null;
+      let fit=null,placement=null;
       const printD=d+(labelHolder?labelDepth:0);
-      if(bed.every(Boolean)) fit=h<=bh && ((w<=bw&&printD<=bd)||(printD<=bw&&w<=bd)) ? 'fit' : 'tooLarge';
-      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,fingerNotch,notchW,notchH,labelHolder,labelW,labelH,labelBottom,labelDepth,printD,bw,bd,bh,fit,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
+      if(bed.every(Boolean)){placement=findBedPlacement(w,printD,h,bw,bd,bh);fit=!placement?'tooLarge':placement.margin<2?'tight':'fit'}
+      return {W,D,H,x,y,edge,gap,wall,base,w,d,h,cableHole,cableW,cableH,cableBottom,fingerNotch,notchW,notchH,labelHolder,labelW,labelH,labelBottom,labelDepth,printD,bw,bd,bh,fit,placement,innerW:roundDown(w-2*wall),innerD:roundDown(d-2*wall),innerH:roundDown(h-base),sideW:(W-x*w-(x-1)*gap)/2,sideD:(D-y*d-(y-1)*gap)/2};
     }
     function preview(p){
       const pad=16, vw=560, vh=240, scale=Math.min((vw-2*pad)/p.W,(vh-2*pad)/p.D);
@@ -151,7 +164,7 @@
       if(p.labelHolder){const x0=(w-p.labelW)/2,x1=x0+p.labelW,y=-p.labelDepth,z0=p.labelBottom,z1=z0+p.labelH,b=Math.min(p.wall*2,p.labelW/5,p.labelH/3);svg+=poly([[x0,y,z0],[x1,y,z0],[x1,y,z0+b],[x0,y,z0+b]],'#d4e5d8','#315f49');svg+=poly([[x0,y,z0],[x0+b,y,z0],[x0+b,y,z1],[x0,y,z1]],'#d4e5d8','#315f49');svg+=poly([[x1-b,y,z0],[x1,y,z0],[x1,y,z1],[x1-b,y,z1]],'#d4e5d8','#315f49')}
       svg+=line([0,0,h],[w,0,h]);svg+=line([w,0,h],[w,d,h]);svg+=line([w,d,h],[0,d,h]);svg+=line([0,d,h],[0,0,h]);
       svg+=line([viw,vid,h],[w-viw,vid,h],'#2f6049',1.6);svg+=line([w-viw,vid,h],[w-viw,d-vid,h],'#2f6049',1.6);svg+=line([w-viw,d-vid,h],[viw,d-vid,h],'#2f6049',1.6);svg+=line([viw,d-vid,h],[viw,vid,h],'#2f6049',1.6);
-      svg+=`<text x="18" y="232" fill="#566c60" font-size="11">外寸 ${format(w)} × ${format(d)} × ${format(h)} mm　壁厚 ${format(p.wall)} mm</text><text x="18" y="244" fill="#839087" font-size="9">※壁厚は見やすいように強調表示</text></svg>`;
+      svg+=`<text x="18" y="232" fill="#566c60" font-size="11">外寸 ${format(w)} × ${format(d)} × ${format(h)} mm　壁厚 ${format(p.wall)} mm</text><text x="18" y="244" fill="#839087" font-size="9">※3辺は同一縮尺／壁厚のみ見やすく強調</text></svg>`;
       const keys=[`壁厚 ${format(p.wall)} mm`,p.cableHole&&'ケーブル穴',p.fingerNotch&&'指掛け',p.labelHolder&&'ラベル差し'].filter(Boolean);
       return `${svg}${keys.length?`<div class="option-key">${keys.map(k=>`<span>${k}</span>`).join('')}</div>`:''}`;
     }
@@ -230,9 +243,20 @@
         if(drawer){renderDrawer();return;}
         const p=current=calculate(); $('status').textContent='計算済み'; $('status').className='pill';
         $('summary').textContent=`同じ箱を横一列に ${p.x}個`;
-        let fitText='造形範囲を入力すると、印刷できるか確認できます。', fitBad=false;
-        if(p.fit==='fit') fitText='✓ 指定した造形範囲に収まります（底を下にして配置）。';
-        if(p.fit==='tooLarge'){fitText='指定した造形範囲には収まりません。分割数や高さを見直してください。';fitBad=true}
+        let fitText='造形範囲を入力すると、箱1個を現実的に印刷できるか確認できます。', fitBad=false;
+        const copies=`このSTLは箱1個分です。合計${p.x}個を、1個ずつ印刷してもかまいません。`;
+        if(p.fit==='fit'){
+          const direction=p.placement.angle<.1?'通常の向き':`約${Math.round(p.placement.angle)}°斜め`;
+          fitText=`✓ 箱1個は${direction}で造形範囲に収まります。 ${copies}`;
+        }
+        if(p.fit==='tight'){
+          fitText=`△ 箱1個は約${Math.round(p.placement.angle)}°斜めなら計算上収まりますが、最小余裕は約${format(Math.max(0,p.placement.margin))} mmです。Bambu Studioのプレート境界や造形除外範囲に触れる可能性があるため、奥行または高さを2 mm以上小さくすることを推奨します。 ${copies}`;fitBad=true;
+        }
+        if(p.fit==='tooLarge'){
+          const reasons=[];if(p.h>p.bh)reasons.push(`高さ${format(p.h)} mmが上限${format(p.bh)} mmを超えています`);
+          if(!reasons.length)reasons.push(`底面${format(p.w)} × ${format(p.printD)} mmは斜めにしても${format(p.bw)} × ${format(p.bd)} mmに収まりません`);
+          fitText=`箱1個でも印刷できません（${reasons.join('、')}）。棚の奥行・箱の高さ・前後の余白を見直してください。`;fitBad=true;
+        }
         $('resultBody').innerHTML=`<div class="sizecard"><div class="label">箱1個の外寸</div><div class="dimensions">${format(p.w)} × ${format(p.d)} × ${format(p.h)} <small>mm</small></div><div class="caption">幅 × 奥行 × 高さ</div></div>
           <div class="inner"><span>箱1個の内寸</span><strong>${format(p.innerW)} × ${format(p.innerD)} × ${format(p.innerH)} mm</strong></div>
           <div class="inner"><span>必要な箱の数</span><strong>${p.x*p.y} 個</strong></div>
