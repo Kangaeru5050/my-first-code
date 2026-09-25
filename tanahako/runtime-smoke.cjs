@@ -91,7 +91,9 @@ const scenario = `
   $('modeDrawer').checked = false;
   $('modeShelf').checked = true;
   render();
-  if (!$('resultBody').innerHTML.includes('Webで探す')) throw new Error('Shelf product search is missing');
+  if (!$('resultBody').innerHTML.includes('Webで正確に探す')) throw new Error('Shelf product search is missing');
+  if (decodeURIComponent(productUrl(current, 'yahoo')).includes('高さ')) throw new Error('Marketplace query should omit height');
+  if (!decodeURIComponent(productUrl(current, 'rakuten')).includes('幅20cm 奥行40cm')) throw new Error('Marketplace query should use rounded centimeters');
   if (!$('resultBody').innerHTML.includes('STLは必要ならそのまま保存')) throw new Error('No-printer shelf state is missing');
   const mesh = buildAsciiStl(current);
   if (!mesh.startsWith('solid tanahako') || !mesh.trimEnd().endsWith('endsolid tanahako') || !mesh.includes('facet normal')) throw new Error('STL generation failed: ' + mesh.length + ' chars');
