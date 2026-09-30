@@ -73,6 +73,11 @@ const scenario = `
   $('modeShelf').checked = false;
   render();
   $('drawVertical').click();
+  if (drawerTool !== 'x') throw new Error('Vertical drawing mode did not start');
+  $('selectEqual').click();
+  if (drawerTool !== 'equal') throw new Error('Equal division did not cancel line drawing mode');
+  $('drawVertical').click();
+  if (drawerTool !== 'x') throw new Error('Line drawing did not cancel equal division mode');
   splitDrawerAt('x', .6, .5);
   const beforeMove = calculateDrawer().boxes.map(box => box.w);
   activeDividerId = drawerDividers[0].id;
@@ -88,6 +93,7 @@ const scenario = `
   $('equalCount').value = '4';
   divideSelectedCell('x');
   if (drawerCells.length !== 4 || drawerDividers.length !== 3) throw new Error('Four-way equal split failed');
+  if (drawerTool !== 'equal') throw new Error('Equal division mode did not remain active');
   if (drawerCells.some(cell => Math.abs(cell.w - .25) > 1e-8)) throw new Error('Four-way split is not equal');
   activeCellId = drawerCells[1].id;
   $('equalCount').value = '3';
