@@ -47,7 +47,7 @@
         </div><div class="drawer-editor"><div class="drawer-canvas" id="drawerEditor" aria-label="引き出しの分割線編集"></div><p class="editor-status" id="editorStatus">線の向きを選んでください。</p><div class="split-tools">
           <button type="button" id="drawVertical">縦線を引く</button><button type="button" id="drawHorizontal">横線を引く</button>
           <button type="button" id="undoLayout">1つ戻す</button><button type="button" id="resetLayout">最初から</button>
-        </div><div class="equal-tools"><div class="equal-head"><button type="button" id="selectEqual">箱を選んで等分</button><select id="equalCount" aria-label="等分する数"><option value="2">2等分</option><option value="3">3等分</option><option value="4">4等分</option><option value="5">5等分</option><option value="6">6等分</option><option value="7">7等分</option><option value="8">8等分</option><option value="9">9等分</option><option value="10">10等分</option></select></div><div class="equal-actions"><button type="button" id="divideLeftRight" disabled>左右に2等分</button><button type="button" id="divideTopBottom" disabled>上下に2等分</button></div></div><div class="field full"><label for="dividerMoveAmount">選んだ線を動かす距離</label><div class="input"><input id="dividerMoveAmount" type="number" min="0.1" step="0.1" value="1"><span class="unit">mm</span></div></div><div class="adjust-tools"><button type="button" id="moveBackward" disabled>−1 mm</button><button type="button" id="moveForward" disabled>＋1 mm</button></div></div></section>
+        </div><div class="equal-tools"><div class="equal-head"><button type="button" id="selectEqual">箱を選んで等分</button><select id="equalCount" aria-label="等分する数"><option value="2">2等分</option><option value="3">3等分</option><option value="4">4等分</option><option value="5">5等分</option><option value="6">6等分</option><option value="7">7等分</option><option value="8">8等分</option><option value="9">9等分</option><option value="10">10等分</option></select></div><div class="equal-actions"><button type="button" id="divideLeftRight" disabled>左右に2等分</button><button type="button" id="divideTopBottom" disabled>上下に2等分</button></div></div><div class="split-tools"><button type="button" id="deleteDivider" disabled>選んだ線を削除</button></div><div class="field full"><label for="dividerMoveAmount">選んだ線を動かす距離</label><div class="input"><input id="dividerMoveAmount" type="number" min="0.1" step="0.1" value="1"><span class="unit">mm</span></div></div><div class="adjust-tools"><button type="button" id="moveBackward" disabled>−1 mm</button><button type="button" id="moveForward" disabled>＋1 mm</button></div></div></section>
         <section class="section"><div class="section-head"><span class="badge">5</span><h2>すき間と厚み</h2></div><div class="grid two">
           <div class="field"><label for="edge">棚の端の余白（片側）</label><div class="input"><input id="edge" type="number" min="0" step="0.1" value="2" required><span class="unit">mm</span></div></div>
           <div class="field"><label for="gap">箱どうしのすき間</label><div class="input"><input id="gap" type="number" min="0" step="0.1" value="1" required><span class="unit">mm</span></div></div>
@@ -70,7 +70,7 @@
       <div class="panel result" aria-live="polite"><div class="result-head"><h2>計算結果</h2><span class="pill" id="status">計算済み</span></div><p class="sub" id="summary">箱を6個並べる設計</p><div id="resultBody"></div></div>
     </div>
   </main>
-  <footer class="footer"><div class="wrap">TANAHAKO · 先生向け限定テスト版 v26　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
+  <footer class="footer"><div class="wrap">TANAHAKO · 先生向け限定テスト版 v27　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
     const ids = ['modeShelf','modeDrawer','shelfW','shelfD','shelfH','countW','drawerW','drawerD','drawerH','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
@@ -201,12 +201,13 @@
       $('divideLeftRight').textContent=`左右に${equalCount}等分`;
       $('divideTopBottom').textContent=`上下に${equalCount}等分`;
       updateDividerMoveControls();
-      $('editorStatus').textContent=drawerTool==='x'?'縦線を追加する位置をクリックしてください。既存の線はドラッグ、または数値で位置を調整できます。':drawerTool==='y'?'横線を追加する位置をクリックしてください。既存の線はドラッグ、または数値で位置を調整できます。':drawerTool==='equal'?(selected?'オレンジ色の箱を、左右または上下に同じ大きさで分けられます。':'等分したい箱を図の中でクリックしてください。'):active?'オレンジ色の線を調整中です。ドラッグするか、動かす距離を入力して方向のボタンを押してください。':selected?'オレンジ色の箱を、左右または上下に同じ大きさで分けられます。':'縦線・横線を追加するか、「箱を選んで等分」を選んでください。';
+      $('editorStatus').textContent=drawerTool==='x'?'縦線を追加する位置をクリックしてください。既存の線はドラッグ、または数値で位置を調整できます。':drawerTool==='y'?'横線を追加する位置をクリックしてください。既存の線はドラッグ、または数値で位置を調整できます。':drawerTool==='equal'?(selected?'オレンジ色の箱を、左右または上下に同じ大きさで分けられます。':'等分したい箱を図の中でクリックしてください。'):active?'オレンジ色の線を調整中です。ドラッグ・数値入力で移動できます。「選んだ線を削除」で両側の箱をつなげます。':selected?'オレンジ色の箱を、左右または上下に同じ大きさで分けられます。':'縦線・横線を追加するか、「箱を選んで等分」を選んでください。';
       $('undoLayout').disabled=!drawerHistory.length;
     }
     function updateDividerMoveControls(){
       const active=drawerDividers.find(d=>d.id===activeDividerId),mm=Number($('dividerMoveAmount').value);
       const valid=Number.isFinite(mm)&&mm>0;
+      $('deleteDivider').disabled=!active;
       $('moveBackward').disabled=$('moveForward').disabled=!active||!valid;
       const label=valid?format(mm):'—';
       $('moveBackward').textContent=active?.axis==='x'?`左へ ${label} mm`:active?.axis==='y'?`上へ ${label} mm`:`−${label} mm`;
@@ -260,6 +261,29 @@
       after.forEach(c=>{if(divider.axis==='x'){c.x=next;c.w-=delta}else{c.y=next;c.h-=delta}});
       drawerDividers.forEach(d=>{if(d.id===divider.id)return;if(d.axis!==divider.axis){if(Math.abs(d.start-old)<eps)d.start=next;if(Math.abs(d.end-old)<eps)d.end=next}});
       divider.pos=next;render();return true;
+    }
+    function deleteDrawerDivider(){
+      const divider=drawerDividers.find(d=>d.id===activeDividerId);if(!divider)return;
+      const eps=1e-7,axis=divider.axis;
+      const across=c=>axis==='x'?c.y:c.x,span=c=>axis==='x'?c.h:c.w;
+      const along=c=>axis==='x'?c.x:c.y,length=c=>axis==='x'?c.w:c.h;
+      const overlaps=c=>Math.min(divider.end,across(c)+span(c))-Math.max(divider.start,across(c))>eps;
+      const before=drawerCells.filter(c=>overlaps(c)&&Math.abs(along(c)+length(c)-divider.pos)<eps);
+      const after=drawerCells.filter(c=>overlaps(c)&&Math.abs(along(c)-divider.pos)<eps);
+      const pairs=before.map(a=>[a,after.find(b=>Math.abs(across(a)-across(b))<eps&&Math.abs(span(a)-span(b))<eps)]);
+      if(!pairs.length||pairs.length!==after.length||pairs.some(([a,b])=>!b||across(a)<divider.start-eps||across(a)+span(a)>divider.end+eps)){
+        window.alert('両側の箱の区切りがそろっていないため、この線だけを消すと四角い箱になりません。先に、この線につながる短い仕切り線を削除してください。');return;
+      }
+      drawerHistory.push(drawerSnapshot());
+      const removed=new Set(pairs.flatMap(([a,b])=>[a.id,b.id]));
+      const merged=pairs.map(([a,b])=>axis==='x'
+        ?{id:drawerCellId++,x:a.x,y:a.y,w:a.w+b.w,h:a.h}
+        :{id:drawerCellId++,x:a.x,y:a.y,w:a.w,h:a.h+b.h});
+      drawerCells=drawerCells.filter(c=>!removed.has(c.id));
+      drawerCells.push(...merged);
+      drawerCells.sort((a,b)=>a.y-b.y||a.x-b.x);
+      drawerDividers=drawerDividers.filter(d=>d.id!==divider.id);
+      activeDividerId=null;activeCellId=merged.length===1?merged[0].id:null;drawerTool=null;render();
     }
     function undoDrawerLayout(){if(!drawerHistory.length)return;const state=drawerHistory.pop();drawerCells=state.cells;drawerDividers=state.dividers;activeCellId=null;if(!drawerDividers.some(d=>d.id===activeDividerId))activeDividerId=null;render()}
     function resetDrawerLayout(){if(drawerCells.length>1)drawerHistory.push(drawerSnapshot());drawerCells=[{id:drawerCellId++,x:0,y:0,w:1,h:1}];drawerDividers=[];activeDividerId=null;activeCellId=null;drawerTool=null;render()}
@@ -466,6 +490,7 @@
     $('divideTopBottom').addEventListener('click',()=>divideSelectedCell('y'));
     $('undoLayout').addEventListener('click',undoDrawerLayout);
     $('resetLayout').addEventListener('click',resetDrawerLayout);
+    $('deleteDivider').addEventListener('click',deleteDrawerDivider);
     $('moveBackward').addEventListener('click',()=>moveDrawerDivider(-Number($('dividerMoveAmount').value)));
     $('moveForward').addEventListener('click',()=>moveDrawerDivider(Number($('dividerMoveAmount').value)));
     $('dividerMoveAmount').addEventListener('input',updateDividerMoveControls);
