@@ -23,7 +23,7 @@
     <div class="steps" aria-label="使い方"><div class="step"><b>1</b><div><strong>場所を選ぶ</strong>棚か引き出しかを選択</div></div><div class="step"><b>2</b><div><strong>内寸を測る</strong>幅・奥行・高さを入力</div></div><div class="step"><b>3</b><div><strong>買う・作る</strong>市販品を探す、またはSTLを保存</div></div></div>
     <div class="layout">
       <form class="panel controls" id="form" autocomplete="off">
-        <section class="section"><div class="section-head"><span class="badge">1</span><h2>使用するプリンター</h2></div><p class="hint">先に造形範囲を設定すると、箱1個を印刷できるか判定できます。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="custom">その他・手動入力</option><option value="none">プリンターを使わない・市販品を探す</option></select></div></div><div class="grid">
+        <section class="section"><div class="section-head"><span class="badge">1</span><h2>使用するプリンター</h2></div><p class="hint">先に造形範囲を設定すると、箱1個を印刷できるか判定できます。</p><div class="field" style="margin-bottom:12px"><label for="printerPreset">プリンター</label><div class="input select"><select id="printerPreset"><option value="p1s" selected>Bambu Lab P1S（256 × 256 × 256 mm）</option><option value="a1mini">Bambu Lab A1 mini（180 × 180 × 180 mm）</option><option value="custom">その他・手動入力</option><option value="none">プリンターを使わない・市販品を探す</option></select></div></div><div class="grid">
           <div class="field"><label for="bedW">幅</label><div class="input"><input id="bedW" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedD">奥行</label><div class="input"><input id="bedD" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
           <div class="field"><label for="bedH">高さ</label><div class="input"><input id="bedH" type="number" min="1" step="0.1" value="256"><span class="unit">mm</span></div></div>
@@ -70,7 +70,7 @@
       <div class="panel result" aria-live="polite"><div class="result-head"><h2>計算結果</h2><span class="pill" id="status">計算済み</span></div><p class="sub" id="summary">箱を6個並べる設計</p><div id="resultBody"></div></div>
     </div>
   </main>
-  <footer class="footer"><div class="wrap">TANAHAKO · 先生向け限定テスト版 v24　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
+  <footer class="footer"><div class="wrap">TANAHAKO · 先生向け限定テスト版 v25　｜　実際の造形ではプリンターの寸法誤差も確認してください。</div></footer>
   <script>
     const $ = id => document.getElementById(id);
     const ids = ['modeShelf','modeDrawer','shelfW','shelfD','shelfH','countW','drawerW','drawerD','drawerH','edge','gap','wall','base','customHeight','boxHeight','cableHole','cableW','cableH','cableBottom','fingerNotch','notchW','notchH','labelHolder','labelW','labelH','labelBottom','bedW','bedD','bedH'];
@@ -407,7 +407,7 @@
       const sample={w:100,d:70,h:50,wall:2,base:2,cableHole:true,cableW:30,cableH:16,cableBottom:8,fingerNotch:true,notchW:35,notchH:15,labelHolder:true,labelW:50,labelH:25,labelBottom:6,labelDepth:3.5};
       saveStl(sample,'tanahako-feature-sample.stl');
     }
-    $('printerPreset').addEventListener('change',()=>{if($('printerPreset').value==='p1s'){$('bedW').value=256;$('bedD').value=256;$('bedH').value=256}render()});
+    $('printerPreset').addEventListener('change',()=>{const size={p1s:256,a1mini:180}[$('printerPreset').value];if(size){$('bedW').value=size;$('bedD').value=size;$('bedH').value=size}render()});
     ['bedW','bedD','bedH'].forEach(id=>$(id).addEventListener('input',()=>{if(printerEnabled())$('printerPreset').value='custom'}));
     $('drawVertical').addEventListener('click',()=>{drawerTool=drawerTool==='x'?null:'x';activeDividerId=null;activeCellId=null;render()});
     $('drawHorizontal').addEventListener('click',()=>{drawerTool=drawerTool==='y'?null:'y';activeDividerId=null;activeCellId=null;render()});
