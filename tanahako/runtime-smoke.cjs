@@ -32,6 +32,7 @@ function makeElement(id, initial = {}) {
     },
     querySelectorAll() { return []; },
     getBoundingClientRect() { return {left: 0, top: 0, width: 400, height: 240}; },
+    dispatchEvent(event) { for (const fn of listeners[event.type] || []) fn(event); },
     click() {
       for (const fn of listeners.click || []) {
         fn({clientX: 240, clientY: 120, preventDefault() {}});
@@ -66,7 +67,14 @@ const context = {
 };
 const app = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const scenario = `
+  $('printerPreset').value = 'a1mini';
+  $('printerPreset').dispatchEvent({type:'change'});
+  if (['bedW','bedD','bedH'].some(id => Number($(id).value) !== 180)) throw new Error('A1 mini dimensions failed');
+  if (!findBedPlacement(180,180,180,180,180,180)) throw new Error('A1 mini boundary should fit');
+  if (findBedPlacement(181,100,50,180,180,180)) throw new Error('Oversized A1 mini box should fail');
   $('printerPreset').value = 'p1s';
+  $('printerPreset').dispatchEvent({type:'change'});
+  if (['bedW','bedD','bedH'].some(id => Number($(id).value) !== 256)) throw new Error('P1S dimensions failed');
   $('wall').value = '2';
   $('base').value = '2';
   $('modeDrawer').checked = true;
