@@ -24,7 +24,7 @@ function makeElement(id, initial = {}) {
     className: initial.className || '',
     dataset: {},
     style: {},
-    addEventListener(type, fn) { (listeners[type] ||= []).push(fn); },
+    addEventListener(type, fn, capture) { const list=(listeners[type] ||= []); capture ? list.unshift(fn) : list.push(fn); },
     classList: {
       toggle(name, on) { on ? classes.add(name) : classes.delete(name); },
       add(name) { classes.add(name); },
@@ -32,7 +32,7 @@ function makeElement(id, initial = {}) {
     },
     querySelectorAll() { return []; },
     getBoundingClientRect() { return {left: 0, top: 0, width: 400, height: 240}; },
-    dispatchEvent(event) { for (const fn of listeners[event.type] || []) fn(event); },
+    dispatchEvent(event) { event.preventDefault ||= () => {}; event.stopImmediatePropagation = () => {event.stopped=true;}; for (const fn of listeners[event.type] || []) {if(event.stopped)break;fn(event);} },
     click() {
       for (const fn of listeners.click || []) {
         fn({clientX: 240, clientY: 120, preventDefault() {}});
@@ -93,6 +93,33 @@ const scenario = `
   const afterMove = calculateDrawer().boxes.map(box => box.w);
   if (Math.abs((afterMove[0] - beforeMove[0]) - 1) > .11) throw new Error('The left box did not grow by 1 mm');
   if (Math.abs((afterMove[1] - beforeMove[1]) + 1) > .11) throw new Error('The right box did not shrink by 1 mm');
+  $('dividerMoveAmount').value='5';
+  $('dividerMoveAmount').dispatchEvent({type:'input'});
+  const beforeNumeric=drawerDividers[0].pos;
+  $('moveForward').click();
+  const usable=value('drawerW')-2*value('edge');
+  if(Math.abs((drawerDividers[0].pos-beforeNumeric)*usable-5)>1e-7)throw new Error('Numeric movement failed');
+  const historyBeforeDrag=drawerHistory.length,positionBeforeDrag=drawerDividers[0].pos,cellCount=drawerCells.length;
+  const target={closest(){return {dataset:{divider:String(drawerDividers[0].id)}}}};
+  $('drawVertical').click();
+  $('drawerEditor').dispatchEvent({type:'pointerdown',clientX:200,clientY:100,pointerId:1,target});
+  if(drawerTool!==null)throw new Error('Dragging existing line must cancel drawing');
+  $('drawerEditor').dispatchEvent({type:'pointermove',clientX:220,clientY:100});
+  $('drawerEditor').dispatchEvent({type:'pointermove',clientX:240,clientY:100});
+  $('drawerEditor').dispatchEvent({type:'pointerup',clientX:240,clientY:100});
+  $('drawerEditor').dispatchEvent({type:'click',clientX:240,clientY:100});
+  if(drawerCells.length!==cellCount)throw new Error('Drag added new divider');
+  if(Math.abs(drawerDividers[0].pos-positionBeforeDrag-.1)>1e-7)throw new Error('Drag position incorrect');
+  if(drawerHistory.length!==historyBeforeDrag+1)throw new Error('Drag must be one undo action');
+  undoDrawerLayout();
+  if(Math.abs(drawerDividers[0].pos-positionBeforeDrag)>1e-7)throw new Error('Drag undo failed');
+  $('dividerMoveAmount').value='';
+  $('dividerMoveAmount').dispatchEvent({type:'input'});
+  if(!$('moveForward').disabled)throw new Error('Empty movement must disable buttons');
+  const validPosition=drawerDividers[0].pos;
+  moveDrawerDivider(10000);
+  if(drawerDividers[0].pos!==validPosition)throw new Error('Out-of-bounds move changed layout');
+  $('dividerMoveAmount').value='1';
   $('drawHorizontal').click();
   splitDrawerAt('y', .2, .34);
   undoDrawerLayout();
