@@ -4,7 +4,7 @@ TANAHAKOは、学校の棚や引き出しに合う収納箱を「市販品から
 
 ## 開き方
 
-1. `TANAHAKO-teacher-beta-v24.html` をパソコンに保存します。
+1. `TANAHAKO-teacher-beta-v25.html` をパソコンに保存します。
 2. ファイルをダブルクリックし、Chrome、Edge、Safariなどで開きます。
 3. インストールやログインは不要です。
 
