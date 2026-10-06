@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {parseNote,escapeHTML,validRecord}=require('../dist/core.js');
+assert.equal(parseNote('今朝は62.4キロ。7時間眠れた。朝ごはんはヨーグルト。','2026-10-06').weight,62.4);
+assert.equal(parseNote('今朝は62.4キロ。7時間眠れた。','2026-10-06').sleep,7);
+assert.equal(parseNote('体重は６２．４kg。睡眠は７時間半。').sleep,7.5);
+assert.equal(parseNote('昨日は夕食にパン。','2026-10-01').date,'2026-09-30');
+assert.equal(parseNote('一昨日は朝食にパン。','2026-10-01').date,'2026-09-29');
+assert.equal(parseNote('肉を1kg買った。').weight,'');
+assert.equal(parseNote('今朝は朝ごはんを食べた。').weight,'');
+assert.equal(escapeHTML('<script>"&'), '&lt;script&gt;&quot;&amp;');
+const record={id:'x',date:'2026-10-06',note:'食事',kind:'朝食',weight:62.4,sleep:7,photo:''};
+assert.ok(validRecord(record));assert.ok(!validRecord({...record,photo:'javascript:alert(1)'}));assert.ok(!validRecord({...record,weight:-1}));
+console.log('core tests passed');
